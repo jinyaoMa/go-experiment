@@ -1,27 +1,32 @@
 package model
 
-type User struct {
-	Username string
-	Account  string
-	Password string
-	Type     string
-	Active   string
-}
+import (
+	"path"
 
-func NewUser() *User {
-	return &User{
-		Username: "",
-		Account:  "",
-		Password: "",
-		Type:     UT_GUEST,
-		Active:   UA_INACTIVE,
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+)
+
+const (
+	DB_FILENAME = "database.db"
+)
+
+var (
+	db *gorm.DB
+)
+
+func InitDB(workSpace string) *gorm.DB {
+	var err error
+	db, err = gorm.Open(sqlite.Open(path.Join(workSpace, DB_FILENAME)), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
 	}
+	db.AutoMigrate(&User{}, &Role{})
+	createDefaultRoles(db)
+	createUserAdmin(db)
+	return db
 }
 
-func (user *User) ToString() string {
-	return "Username: " + user.Username + "\n" +
-		"Account: " + user.Account + "\n" +
-		"Password: " + user.Password + "\n" +
-		"Type: " + user.Type + "\n" +
-		"Active: " + user.Active + "\n\n"
+func GetDB() *gorm.DB {
+	return db
 }
