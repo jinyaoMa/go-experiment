@@ -14,6 +14,10 @@ const (
 	ROLE_ADMIN  = "admin"
 )
 
+const (
+	ROLE_ERROR_IGNORE_REPEAT = "ignore repeated role"
+)
+
 type Role struct {
 	gorm.Model
 	Name       string
@@ -40,10 +44,10 @@ func createDefaultRoles(db *gorm.DB) {
 }
 
 func (role *Role) BeforeCreate(tx *gorm.DB) error {
-	var repeat Role
-	result := tx.First(&repeat, "name = ?", role.Name)
+	var repeatedRole Role
+	result := tx.First(&repeatedRole, "name = ?", role.Name)
 	if result.RowsAffected > 0 {
-		return errors.New("ignore repeated role")
+		return errors.New(ROLE_ERROR_IGNORE_REPEAT)
 	}
 	return nil
 }

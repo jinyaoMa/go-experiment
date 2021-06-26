@@ -1,10 +1,15 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
 	"gorm.io/gorm"
+)
+
+const (
+	USER_ERROR_IGNORE_REPEAT = "ignore repeated user"
 )
 
 type User struct {
@@ -36,4 +41,19 @@ func createUserAdmin(db *gorm.DB) User {
 
 	fmt.Println("User admin created")
 	return admin
+}
+
+func (user *User) BeforeCreate(tx *gorm.DB) error {
+	var repeatedUser User
+	result := tx.First(&repeatedUser, "account = ?", user.Account)
+	if result.RowsAffected > 0 {
+		return errors.New(USER_ERROR_IGNORE_REPEAT)
+	}
+	return nil
+}
+
+func GetUsers() []User {
+	var users []User
+	db.Find(&users)
+	return users
 }
