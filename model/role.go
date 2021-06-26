@@ -43,7 +43,7 @@ func (role *Role) BeforeCreate(tx *gorm.DB) error {
 	var repeat Role
 	result := tx.First(&repeat, "name = ?", role.Name)
 	if result.RowsAffected > 0 {
-		return errors.New("Ignore repeated role")
+		return errors.New("ignore repeated role")
 	}
 	return nil
 }
