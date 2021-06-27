@@ -38,9 +38,9 @@ func createDefaultRoles(db *gorm.DB) {
 		},
 	}
 
-	db.Create(&roles)
-
-	fmt.Println("Default roles created")
+	if db.Create(&roles).Error == nil {
+		fmt.Println("Default roles created")
+	}
 }
 
 func (role *Role) BeforeCreate(tx *gorm.DB) error {

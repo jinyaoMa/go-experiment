@@ -1,16 +1,13 @@
 package workspace
 
 import (
-	"fmt"
 	"jinyaoma/go-experiment/config"
-	"jinyaoma/go-experiment/model"
 	"os"
 	"path"
 )
 
-func InitWorkspace(users []model.User) {
-	for _, user := range users {
-		os.Mkdir(path.Join(config.WORKSPACE, user.Account), os.ModeDir)
-	}
-	fmt.Println("Workspace initialized")
+func InitUserWorkspace(userAccount string) error {
+	targetPath := path.Join(config.WORKSPACE, userAccount)
+	err := os.Mkdir(targetPath, os.ModeDir)
+	return err
 }

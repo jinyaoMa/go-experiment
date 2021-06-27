@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 	"fmt"
+	"jinyaoma/go-experiment/workspace"
 	"time"
 
 	"gorm.io/gorm"
@@ -21,6 +22,7 @@ type User struct {
 	TokenExpiredAt *time.Time
 	RoleID         uint
 	Role           Role
+	Files          []File
 }
 
 func createUserAdmin(db *gorm.DB) User {
@@ -30,16 +32,21 @@ func createUserAdmin(db *gorm.DB) User {
 	if admin.Account != "admin" {
 		db.First(&role, "name = ?", ROLE_ADMIN)
 		if role.Name == ROLE_ADMIN {
-			db.Create(&User{
-				Name:     "Admin",
-				Account:  "admin",
-				Password: "admin",
-				RoleID:   role.ID,
-			})
+			err := workspace.InitUserWorkspace("/admin")
+			if err != nil {
+				fmt.Println("User admin workspace error")
+			} else {
+				if db.Create(&User{
+					Name:     "Admin",
+					Account:  "admin",
+					Password: "admin",
+					RoleID:   role.ID,
+				}).Error == nil {
+					fmt.Println("User admin created")
+				}
+			}
 		}
 	}
-
-	fmt.Println("User admin created")
 	return admin
 }
 

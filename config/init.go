@@ -1,5 +1,5 @@
 package config
 
 const (
-	WORKSPACE = "D:\\WORKSPACE"
+	WORKSPACE = "D:/WORKSPACE"
 )
