@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"jinyaoma/go-experiment/workspace"
+
+	"path/filepath"
 	"time"
 
 	"gorm.io/gorm"
@@ -32,7 +34,20 @@ func initUserAdmin(db *gorm.DB) User {
 	if admin.Account != "admin" {
 		db.First(&role, "name = ?", ROLE_ADMIN)
 		if role.Name == ROLE_ADMIN {
-			err := workspace.InitUserWorkspace("/admin")
+			var userFiles []File
+			err := workspace.InitUserWorkspace("/admin", func(path string, isDir bool) {
+				var typ string
+				if isDir {
+					typ = FILE_TYPE_DIRECTORY
+				} else {
+					typ = FILE_TYPE_FILE
+				}
+				userFiles = append(userFiles, File{
+					Path:      path,
+					Type:      typ,
+					Extension: filepath.Ext(path),
+				})
+			})
 			if err != nil {
 				fmt.Println("User admin workspace error")
 			} else {
@@ -41,6 +56,7 @@ func initUserAdmin(db *gorm.DB) User {
 					Account:  "admin",
 					Password: "admin",
 					RoleID:   role.ID,
+					Files:    userFiles,
 				}).Error == nil {
 					fmt.Println("User admin initialized")
 				}
