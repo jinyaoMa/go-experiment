@@ -22,8 +22,8 @@ func InitDB(workSpace string) *gorm.DB {
 		panic("failed to connect database")
 	}
 	db.AutoMigrate(&User{}, &Role{}, &File{})
-	createDefaultRoles(db)
-	createUserAdmin(db)
+	initDefaultRoles(db)
+	initUserAdmin(db)
 	return db
 }
 

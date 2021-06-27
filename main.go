@@ -3,6 +3,7 @@ package main
 import (
 	"jinyaoma/go-experiment/config"
 	"jinyaoma/go-experiment/model"
+	"jinyaoma/go-experiment/workspace"
 	// "github.com/gin-gonic/gin"
 )
 
@@ -19,4 +20,5 @@ func main() {
 		r.Run() // 监听并在 0.0.0.0:8080 上启动服务
 	*/
 
+	workspace.GetInfo()
 }

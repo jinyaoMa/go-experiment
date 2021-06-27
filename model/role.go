@@ -24,7 +24,7 @@ type Role struct {
 	Permission string
 }
 
-func createDefaultRoles(db *gorm.DB) {
+func initDefaultRoles(db *gorm.DB) {
 	roles := []Role{
 		{
 			Name:       ROLE_ADMIN,
@@ -39,7 +39,7 @@ func createDefaultRoles(db *gorm.DB) {
 	}
 
 	if db.Create(&roles).Error == nil {
-		fmt.Println("Default roles created")
+		fmt.Println("Default roles initialized")
 	}
 }
 

@@ -25,7 +25,7 @@ type User struct {
 	Files          []File
 }
 
-func createUserAdmin(db *gorm.DB) User {
+func initUserAdmin(db *gorm.DB) User {
 	var admin User
 	var role Role
 	db.First(&admin, "account = ?", "admin")
@@ -42,7 +42,7 @@ func createUserAdmin(db *gorm.DB) User {
 					Password: "admin",
 					RoleID:   role.ID,
 				}).Error == nil {
-					fmt.Println("User admin created")
+					fmt.Println("User admin initialized")
 				}
 			}
 		}
