@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"jinyaoma/go-experiment/workspace"
+	"os"
 
 	"path/filepath"
 	"time"
@@ -35,9 +36,9 @@ func initUserAdmin(db *gorm.DB) User {
 		db.First(&role, "name = ?", ROLE_ADMIN)
 		if role.Name == ROLE_ADMIN {
 			var userFiles []File
-			err := workspace.InitUserWorkspace("/admin", func(path string, isDir bool) {
+			err := workspace.InitUserWorkspace("/admin", func(path string, fileInfo os.FileInfo) {
 				var typ string
-				if isDir {
+				if fileInfo.IsDir() {
 					typ = FILE_TYPE_DIRECTORY
 				} else {
 					typ = FILE_TYPE_FILE
@@ -46,6 +47,7 @@ func initUserAdmin(db *gorm.DB) User {
 					Path:      path,
 					Type:      typ,
 					Extension: filepath.Ext(path),
+					Size:      fileInfo.Size(),
 				})
 			})
 			if err != nil {

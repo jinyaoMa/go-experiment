@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-type UserFilesFunc func(path string, isDir bool)
+type UserFilesFunc func(path string, fileInofo os.FileInfo)
 
 func InitUserWorkspace(userAccount string, fn UserFilesFunc) error {
 	targetPath := filepath.Join(config.WORKSPACE, userAccount)
@@ -29,7 +29,7 @@ func initUserFiles(userPath string, fn UserFilesFunc) {
 		if f == nil {
 			return err
 		}
-		fn(p, f.IsDir())
+		fn(p, f)
 		return nil
 	})
 	if err != nil {

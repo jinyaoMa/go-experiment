@@ -21,6 +21,7 @@ type File struct {
 	Path           string `gorm:"not null"`
 	Type           string `gorm:"check:type IN ('directory', 'file');not null"`
 	Extension      string
+	Size           int64
 	Recycled       uint `gorm:"check:recycled IN (0, 1);default:0"`
 	ShareCode      *string
 	ShareExpiredAt *time.Time
