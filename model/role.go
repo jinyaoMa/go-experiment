@@ -8,7 +8,6 @@ import (
 )
 
 const (
-	ROLE_GUEST  = "guest"
 	ROLE_MEMBER = "member"
 	ROLE_VIP    = "vip"
 	ROLE_ADMIN  = "admin"
@@ -35,16 +34,11 @@ func initDefaultRoles(db *gorm.DB) {
 			Name: ROLE_VIP,
 		}, {
 			Name: ROLE_MEMBER,
-		}, {
-			Name: ROLE_GUEST,
 		},
 	}
 
 	if db.Create(&roles).Error == nil {
 		fmt.Println("Default roles initialized")
-		db.Create(&Role{
-			Name: ROLE_GUEST,
-		})
 	}
 }
 
