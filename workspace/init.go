@@ -23,7 +23,10 @@ func InitUserWorkspace(userAccount string, fn UserFilesFunc) error {
 }
 
 func GetInfo() {
-	disk := InitDisk(config.WORKSPACE)
+	disk, err := InitDisk(config.WORKSPACE)
+	if err != nil {
+		fmt.Println(err)
+	}
 	fmt.Printf("%+v", disk)
 }
 
