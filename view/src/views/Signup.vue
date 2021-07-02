@@ -1,13 +1,28 @@
 <template>
-  <div class="login">
+  <div class="signup">
+    <div class="title">{{ $locale.signup.title }}</div>
     <div class="form">
       <div class="form-item">
-        <label for="account">{{ $locale.login.account }}</label>
+        <label for="username">{{ $locale.signup.username }}</label>
+        <div class="custom-input">
+          <input
+            id="username"
+            type="text"
+            :placeholder="$locale.signup.usernamePlaceholder"
+            v-model="username"
+          />
+          <div v-if="username" class="clean-input">
+            <i class="fas fa-times" @click="handleCleanUsername"></i>
+          </div>
+        </div>
+      </div>
+      <div class="form-item">
+        <label for="account">{{ $locale.signup.account }}</label>
         <div class="custom-input">
           <input
             id="account"
             type="text"
-            :placeholder="$locale.login.accountPlaceholder"
+            :placeholder="$locale.signup.accountPlaceholder"
             v-model="account"
           />
           <div v-if="account" class="clean-input">
@@ -16,12 +31,12 @@
         </div>
       </div>
       <div class="form-item">
-        <label for="password">{{ $locale.login.password }}</label>
+        <label for="password">{{ $locale.signup.password }}</label>
         <div class="custom-input">
           <input
             id="password"
             type="password"
-            :placeholder="$locale.login.passwordPlaceholder"
+            :placeholder="$locale.signup.passwordPlaceholder"
             v-model="password"
           />
           <div v-if="password" class="clean-input">
@@ -30,12 +45,27 @@
         </div>
       </div>
       <div class="form-item">
-        <button class="btn-login">{{ $locale.login.login }}</button>
+        <label for="confirmPassword">{{
+          $locale.signup.confirmPassword
+        }}</label>
+        <div class="custom-input">
+          <input
+            id="confirmPassword"
+            type="password"
+            :placeholder="$locale.signup.confirmPasswordPlaceholder"
+            v-model="confirmPassword"
+          />
+          <div v-if="confirmPassword" class="clean-input">
+            <i class="fas fa-times" @click="handleCleanConfirmPassword"></i>
+          </div>
+        </div>
       </div>
       <div class="form-item">
-        <button class="btn-signup" @click="handleSignup">
-          {{ $locale.login.signup }}
-        </button>
+        <button class="btn-submit">{{ $locale.signup.submit }}</button>
+      </div>
+      <div class="form-item back-option">
+        {{ $locale.signup.back }}
+        <router-link to="/login">{{ $locale.signup.login }}</router-link>
       </div>
     </div>
   </div>
@@ -45,13 +75,15 @@
 export default {
   data() {
     return {
+      username: "",
       account: "",
       password: "",
+      confirmPassword: "",
     };
   },
   methods: {
-    handleSignup() {
-      this.$router.push("/signup");
+    handleCleanUsername() {
+      this.username = "";
     },
     handleCleanAccount() {
       this.account = "";
@@ -59,18 +91,28 @@ export default {
     handleCleanPassword() {
       this.password = "";
     },
+    handleCleanConfirmPassword() {
+      this.confirmPassword = "";
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.login {
+.signup {
   position: relative;
-  min-height: 100vh;
+  min-height: 560px;
+  height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   letter-spacing: 0.1em;
+}
+.title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 0.25em;
 }
 .form {
   background-color: #ffffff;
@@ -139,19 +181,17 @@ export default {
     font-weight: 500;
     border-radius: 4px;
   }
-  .btn-login {
+  .btn-submit {
     color: #ffffff;
     background-color: #333333;
     &:hover {
       background-color: #555555;
     }
   }
-  .btn-signup {
-    color: #000000;
-    background-color: #f1f2f3;
-    &:hover {
-      background-color: #edeeef;
-    }
-  }
+}
+.back-option {
+  font-size: 0.8em;
+  display: block;
+  text-align: center;
 }
 </style>

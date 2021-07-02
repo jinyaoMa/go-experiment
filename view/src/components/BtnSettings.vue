@@ -1,20 +1,21 @@
 <template>
-  <div class="btn-lang-swap" @click="$swapLang">
-    <span class="text">{{ $locale.common.langTag }}</span>
+  <div class="btn-settings">
+    <i class="fas fa-cog" />
   </div>
 </template>
 
 <script>
 export default {
-  name: "btn-lang-swap",
+  name: "btn-settings",
 };
 </script>
 
 <style lang="scss" scoped>
-.btn-lang-swap {
+.btn-settings {
   display: flex;
   width: 3em;
   height: 3em;
+  line-height: 3em;
   justify-content: center;
   align-items: center;
   cursor: pointer;
@@ -30,9 +31,5 @@ export default {
   &:active {
     background-color: #f1f2f3aa;
   }
-}
-.text {
-  display: inline-block;
-  line-height: 1;
 }
 </style>
