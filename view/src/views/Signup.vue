@@ -1,5 +1,6 @@
 <template>
   <div class="signup">
+    <Copyright />
     <div class="title">{{ $locale.signup.title }}</div>
     <div class="form">
       <div class="form-item">
@@ -68,11 +69,21 @@
         <router-link to="/login">{{ $locale.signup.login }}</router-link>
       </div>
     </div>
+    <div class="float-panel">
+      <BtnLangSwap />
+    </div>
   </div>
 </template>
 
 <script>
+import Copyright from "../components/Copyright.vue";
+import BtnLangSwap from "../components/BtnLangSwap.vue";
+
 export default {
+  components: {
+    Copyright,
+    BtnLangSwap,
+  },
   data() {
     return {
       username: "",
@@ -117,6 +128,7 @@ export default {
 .form {
   background-color: #ffffff;
   padding: 0 0.5em;
+  max-width: 280px;
 }
 .form-item {
   display: flex;
@@ -146,6 +158,7 @@ export default {
     background-color: transparent;
     outline: none;
     min-width: 280px;
+    width: 100%;
     box-sizing: border-box;
     font-size: 0.9em;
     color: #333333;
@@ -180,6 +193,7 @@ export default {
     transition: 0.2s;
     font-weight: 500;
     border-radius: 4px;
+    user-select: none;
   }
   .btn-submit {
     color: #ffffff;
@@ -190,14 +204,17 @@ export default {
   }
 }
 .back-option {
-  font-size: 0.8em;
+  font-size: 0.9em;
   display: block;
   text-align: center;
   > a {
+    font-weight: bold;
     color: #2196f3;
-    &:visited {
-      color: #3f51b5;
-    }
   }
+}
+.float-panel {
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
 }
 </style>

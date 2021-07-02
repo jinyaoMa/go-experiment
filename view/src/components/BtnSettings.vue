@@ -1,5 +1,5 @@
 <template>
-  <div class="btn-settings">
+  <div class="btn-settings" :title="$locale.common.btnSettingsTips">
     <i class="fas fa-cog" />
   </div>
 </template>

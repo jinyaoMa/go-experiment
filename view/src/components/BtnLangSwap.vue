@@ -1,5 +1,9 @@
 <template>
-  <div class="btn-lang-swap" @click="$swapLang">
+  <div
+    class="btn-lang-swap"
+    @click="$swapLang"
+    :title="$locale.common.btnLangTips"
+  >
     <span class="text">{{ $locale.common.langTag }}</span>
   </div>
 </template>

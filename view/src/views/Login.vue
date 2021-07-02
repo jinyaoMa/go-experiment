@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <Copyright />
     <div class="form">
       <div class="form-item">
         <label for="account">{{ $locale.login.account }}</label>
@@ -33,16 +34,26 @@
         <button class="btn-login">{{ $locale.login.login }}</button>
       </div>
       <div class="form-item">
-        <button class="btn-signup" @click="handleSignup">
+        <router-link class="btn-signup" tag="a" to="/signup">
           {{ $locale.login.signup }}
-        </button>
+        </router-link>
       </div>
+    </div>
+    <div class="float-panel">
+      <BtnLangSwap />
     </div>
   </div>
 </template>
 
 <script>
+import Copyright from "../components/Copyright.vue";
+import BtnLangSwap from "../components/BtnLangSwap.vue";
+
 export default {
+  components: {
+    Copyright,
+    BtnLangSwap,
+  },
   data() {
     return {
       account: "",
@@ -50,9 +61,6 @@ export default {
     };
   },
   methods: {
-    handleSignup() {
-      this.$router.push("/signup");
-    },
     handleCleanAccount() {
       this.account = "";
     },
@@ -75,6 +83,7 @@ export default {
 .form {
   background-color: #ffffff;
   padding: 0 0.5em;
+  max-width: 280px;
 }
 .form-item {
   display: flex;
@@ -104,6 +113,7 @@ export default {
     background-color: transparent;
     outline: none;
     min-width: 280px;
+    width: 100%;
     box-sizing: border-box;
     font-size: 0.9em;
     color: #333333;
@@ -128,7 +138,8 @@ export default {
       cursor: pointer;
     }
   }
-  button {
+  .btn-login,
+  .btn-signup {
     border: none;
     padding: 0.5em;
     font-family: inherit;
@@ -138,6 +149,7 @@ export default {
     transition: 0.2s;
     font-weight: 500;
     border-radius: 4px;
+    user-select: none;
   }
   .btn-login {
     color: #ffffff;
@@ -147,11 +159,19 @@ export default {
     }
   }
   .btn-signup {
-    color: #000000;
+    cursor: default;
+    text-align: center;
+    text-decoration: none;
+    color: #2196f3;
     background-color: #f1f2f3;
     &:hover {
-      background-color: #edeeef;
+      background-color: #eaebec;
     }
   }
+}
+.float-panel {
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
 }
 </style>

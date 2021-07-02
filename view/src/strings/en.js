@@ -1,14 +1,24 @@
 export default {
   common: {
-    langTag: "Aa"
+    langTag: "Aa",
+    btnLangTips: "当前语言为英语，点击使用简体中文",
+    btnSettingsTips: "Settings",
+    all: "All Files",
+    pictures: "Pictures",
+    documents: "Documents",
+    videos: "Videos",
+    music: "Music",
+    other: "Other",
+    share: "My Share",
+    recycle: "Recycle Bin"
   },
   login: {
     account: "Account",
     accountPlaceholder: "enter your account here",
     password: "Password",
     passwordPlaceholder: "enter your password here",
-    login: "LoGin",
-    signup: "SiGnuP"
+    login: "LOG IN",
+    signup: "SIGN UP"
   },
   signup: {
     title: "Sign Up",
@@ -19,9 +29,10 @@ export default {
     password: "Password",
     passwordPlaceholder: "enter your password here",
     confirmPassword: "Confirm your password",
-    confirmPasswordPlaceholder: "re-enter your password here",
-    submit: "Submit",
+    confirmPasswordPlaceholder: "re-enter your password",
+    submit: "SUBMIT",
     back: "Already have an account? Back to",
     login: "login"
-  }
+  },
+  home: {}
 };

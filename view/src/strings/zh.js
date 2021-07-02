@@ -1,6 +1,16 @@
 export default {
   common: {
-    langTag: "中"
+    langTag: "中",
+    btnLangTips: "Click to use English (currently in Chinese)",
+    btnSettingsTips: "设置",
+    all: "全部文件",
+    pictures: "图片",
+    documents: "文档",
+    videos: "视频",
+    music: "音乐",
+    other: "其他",
+    share: "我的分享",
+    recycle: "回收站"
   },
   login: {
     account: "帐号",
@@ -23,5 +33,6 @@ export default {
     submit: "提交",
     back: "已经有账号，返回",
     login: "登录"
-  }
+  },
+  home: {}
 };

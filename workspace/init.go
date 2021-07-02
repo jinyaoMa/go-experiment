@@ -10,6 +10,9 @@ import (
 type UserFilesFunc func(path string, fileInofo os.FileInfo)
 
 func InitUserWorkspace(userAccount string, fn UserFilesFunc) error {
+	if config.WORKSPACE_CAN_INITIALIZE {
+		return nil
+	}
 	targetPath := filepath.Join(config.WORKSPACE, userAccount)
 	err := os.Mkdir(targetPath, os.ModeDir)
 	if os.IsExist(err) {
