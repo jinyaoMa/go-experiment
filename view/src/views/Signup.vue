@@ -193,5 +193,11 @@ export default {
   font-size: 0.8em;
   display: block;
   text-align: center;
+  > a {
+    color: #2196f3;
+    &:visited {
+      color: #3f51b5;
+    }
+  }
 }
 </style>
