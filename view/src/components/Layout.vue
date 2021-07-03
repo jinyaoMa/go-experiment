@@ -73,19 +73,30 @@ export default {
   min-width: 240px;
   display: flex;
   flex-direction: column;
-  padding: 4px 0;
   > a {
     padding: 0 1.8em;
     line-height: 3em;
     text-decoration: none;
     color: #333333;
     transition: 0.2s;
+    position: relative;
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0;
+      background-color: #333333;
+      transition: width 0.2s;
+    }
     &:hover {
-      background-color: #f1f2f3;
+      background-color: #f1f2f3aa;
     }
     &.router-link-exact-active {
-      color: #ffffff;
-      background-color: #333333;
+      &::before {
+        width: 0.4em;
+      }
     }
     > i {
       margin-right: 0.6em;

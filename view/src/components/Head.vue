@@ -23,7 +23,7 @@
       </div>
       <div class="user-space">
         <div class="used">
-          <span>{{ usedSpace }} / {{ freeSpace }} {{ unitSpace }}</span>
+          <span>{{ usedSpace }} / {{ allSpace }} {{ unitSpace }}</span>
         </div>
       </div>
     </div>
@@ -44,7 +44,7 @@ export default {
       username: "",
       role: "",
       usedSpace: 0,
-      freeSpace: 0,
+      allSpace: 0,
       unitSpace: "B",
     };
   },

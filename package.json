@@ -12,5 +12,8 @@
   "bugs": {
     "url": "https://github.com/jinyaoMa/go-experiment/issues"
   },
-  "homepage": "https://github.com/jinyaoMa/go-experiment#readme"
+  "homepage": "https://github.com/jinyaoMa/go-experiment#readme",
+  "scripts": {
+    "go": "go build main.go && main.exe"
+  }
 }

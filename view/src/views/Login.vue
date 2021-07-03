@@ -147,11 +147,11 @@ export default {
     letter-spacing: 0.1em;
     outline: none;
     transition: 0.2s;
-    font-weight: 500;
     border-radius: 4px;
     user-select: none;
   }
   .btn-login {
+    font-weight: 500;
     color: #ffffff;
     background-color: #333333;
     &:hover {

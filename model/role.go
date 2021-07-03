@@ -21,7 +21,7 @@ type Role struct {
 	gorm.Model
 	Name       string
 	Permission string
-	Space      int `gorm:"default:0"`
+	Space      uint64 `gorm:"default:0"`
 }
 
 func initDefaultRoles(db *gorm.DB) {
@@ -29,7 +29,6 @@ func initDefaultRoles(db *gorm.DB) {
 		{
 			Name:       ROLE_ADMIN,
 			Permission: "*",
-			Space:      -1,
 		}, {
 			Name: ROLE_VIP,
 		}, {
@@ -45,7 +44,7 @@ func initDefaultRoles(db *gorm.DB) {
 func (role *Role) BeforeCreate(tx *gorm.DB) error {
 	var repeatedRole Role
 	result := tx.First(&repeatedRole, "name = ?", role.Name)
-	if result.RowsAffected > 0 {
+	if result.RowsAffected == 1 {
 		return errors.New(ROLE_ERROR_IGNORE_REPEAT)
 	}
 	return nil

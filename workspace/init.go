@@ -7,10 +7,26 @@ import (
 	"path/filepath"
 )
 
+var (
+	disk Disk
+)
+
+func init() {
+	var err error
+	disk, err = InitDisk(config.WORKSPACE)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func GetDisk() *Disk {
+	return &disk
+}
+
 type UserFilesFunc func(path string, fileInofo os.FileInfo)
 
 func InitUserWorkspace(userAccount string, fn UserFilesFunc) error {
-	if config.WORKSPACE_CAN_INITIALIZE {
+	if !config.WORKSPACE_CAN_INITIALIZE {
 		return nil
 	}
 	targetPath := filepath.Join(config.WORKSPACE, userAccount)
@@ -20,14 +36,6 @@ func InitUserWorkspace(userAccount string, fn UserFilesFunc) error {
 		return nil
 	}
 	return err
-}
-
-func GetInfo() {
-	disk, err := InitDisk(config.WORKSPACE)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf("%+v", disk)
 }
 
 func initUserFiles(userPath string, fn UserFilesFunc) {

@@ -31,10 +31,10 @@ type User struct {
 func initUserAdmin(db *gorm.DB) User {
 	var admin User
 	var role Role
-	db.First(&admin, "account = ?", "admin")
-	if admin.Account != "admin" {
-		db.First(&role, "name = ?", ROLE_ADMIN)
-		if role.Name == ROLE_ADMIN {
+	resultAdmin := db.First(&admin, "account = ?", "admin")
+	if errors.Is(resultAdmin.Error, gorm.ErrRecordNotFound) {
+		resultRole := db.First(&role, "name = ?", ROLE_ADMIN)
+		if resultRole.RowsAffected == 1 {
 			var userFiles []File
 			err := workspace.InitUserWorkspace("/admin", func(path string, fileInfo os.FileInfo) {
 				var typ string
@@ -47,7 +47,7 @@ func initUserAdmin(db *gorm.DB) User {
 					Path:      path,
 					Type:      typ,
 					Extension: filepath.Ext(path),
-					Size:      fileInfo.Size(),
+					Size:      uint64(fileInfo.Size()),
 				})
 			})
 			if err != nil {
@@ -71,7 +71,7 @@ func initUserAdmin(db *gorm.DB) User {
 func (user *User) BeforeCreate(tx *gorm.DB) error {
 	var repeatedUser User
 	result := tx.First(&repeatedUser, "account = ?", user.Account)
-	if result.RowsAffected > 0 {
+	if result.RowsAffected == 1 {
 		return errors.New(USER_ERROR_IGNORE_REPEAT)
 	}
 	return nil

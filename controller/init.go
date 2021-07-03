@@ -6,11 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Login struct {
-	Account  string `form:"account" json:"account" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
-}
-
 func RunRouter() {
 	router := gin.Default()
 
@@ -21,6 +16,7 @@ func RunRouter() {
 				"message": "pong",
 			})
 		})
+		initLogin(api)
 	}
 
 	router.Run(config.SERVER_PORT)

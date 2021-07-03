@@ -23,6 +23,7 @@ const (
 )
 
 var (
+	h   *windows.DLL
 	cmd *windows.Proc
 )
 
@@ -34,15 +35,16 @@ type Disk struct {
 	Free      uint64 `json:"free"`
 }
 
+func init() {
+	h = windows.MustLoadDLL("kernel32.dll")
+	cmd = h.MustFindProc("GetDiskFreeSpaceExW")
+}
+
 func InitDisk(drive string) (Disk, error) {
 	var disk Disk
 	p, err := windows.UTF16PtrFromString(drive)
 	if err != nil {
 		return disk, errors.New(DISK_ERROR_DRIVE_POINTER)
-	}
-	if cmd == nil {
-		h := windows.MustLoadDLL("kernel32.dll")
-		cmd = h.MustFindProc("GetDiskFreeSpaceExW")
 	}
 	_, _, _ = cmd.Call(uintptr(unsafe.Pointer(p)),
 		uintptr(unsafe.Pointer(&disk.Free)),
