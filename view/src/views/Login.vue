@@ -10,6 +10,7 @@
             type="text"
             :placeholder="$locale.login.accountPlaceholder"
             v-model="account"
+            @keyup.enter="handleLogin"
           />
           <div v-if="account" class="clean-input">
             <i class="fas fa-times" @click="handleCleanAccount"></i>
@@ -24,6 +25,7 @@
             type="password"
             :placeholder="$locale.login.passwordPlaceholder"
             v-model="password"
+            @keyup.enter="handleLogin"
           />
           <div v-if="password" class="clean-input">
             <i class="fas fa-times" @click="handleCleanPassword"></i>
@@ -31,10 +33,12 @@
         </div>
       </div>
       <div class="form-item">
-        <button class="btn-login">{{ $locale.login.login }}</button>
+        <button class="btn-login" @click="handleLogin">
+          {{ $locale.login.login }}
+        </button>
       </div>
       <div class="form-item">
-        <router-link class="btn-signup" tag="a" to="/signup">
+        <router-link class="btn-signup" to="/signup">
           {{ $locale.login.signup }}
         </router-link>
       </div>
@@ -61,6 +65,12 @@ export default {
     };
   },
   methods: {
+    handleLogin() {
+      this.$http.post("/api/login", {
+        account: this.account,
+        password: this.password,
+      });
+    },
     handleCleanAccount() {
       this.account = "";
     },

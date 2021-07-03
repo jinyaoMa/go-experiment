@@ -30,7 +30,14 @@ Vue.mixin({
 
 export default new Vuex.Store({
   state: {
-    lang: isChinese() ? langZH : langEN
+    lang: isChinese() ? langZH : langEN,
+    user: {
+      username: "",
+      role: "",
+      usedSpace: 0,
+      allSpace: 0,
+      unitSpace: "B"
+    }
   },
   getters: {
     locale(state) {

@@ -24,9 +24,9 @@ type LoginForm struct {
 
 func login(c *gin.Context) {
 	var form LoginForm
-	err := c.ShouldBindWith(&form, binding.Form)
+	err := c.ShouldBindWith(&form, binding.FormPost)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"error":       CONTROLLER_LOGIN_ERROR_BIND,
 			"isLoginFail": true,
 		})
@@ -36,12 +36,12 @@ func login(c *gin.Context) {
 	var user model.User
 	resultFindUser := model.GetDB().First(&user, "account = ? AND password = ?", form.Account, form.Password)
 	if errors.Is(resultFindUser.Error, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"fail": CONTROLLER_LOGIN_ERROR_USER_NOT_FOUND,
 		})
 		return
 	} else if resultFindUser.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
 		})
 		return
@@ -50,7 +50,7 @@ func login(c *gin.Context) {
 	var role model.Role
 	resultFindRole := model.GetDB().First(&role, user.RoleID)
 	if resultFindRole.RowsAffected != 1 {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
 		})
 		return
@@ -62,7 +62,7 @@ func login(c *gin.Context) {
 		TokenExpiredAt: &expiredAt,
 	})
 	if resultUpdateToken.RowsAffected != 1 {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
 		})
 		return
@@ -71,7 +71,7 @@ func login(c *gin.Context) {
 	var usedSpace uint64
 	resultUsedSpace := model.GetDB().Raw("select sum(size) from files where user_id = ?", user.ID).Scan(&usedSpace)
 	if resultUsedSpace.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
 		})
 		return
