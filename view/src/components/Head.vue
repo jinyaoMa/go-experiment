@@ -8,22 +8,29 @@
       <div
         class="user-name"
         :class="{
-          empty: username.length === 0,
+          empty: $user.name.length === 0,
         }"
       >
-        {{ username }}
+        {{ $user.name }}
       </div>
       <div
         class="user-role"
         :class="{
-          empty: role.length === 0,
+          empty: $user.role.length === 0,
         }"
       >
-        {{ role }}
+        {{ $user.role }}
       </div>
       <div class="user-space">
-        <div class="used">
-          <span>{{ usedSpace }} / {{ allSpace }} {{ unitSpace }}</span>
+        <div
+          class="used"
+          :style="{
+            width: usedSpaceWidth,
+          }"
+        >
+          <span>
+            {{ usedSpace }} {{ usedUnit }} / {{ allSpace }} {{ allUnit }}
+          </span>
         </div>
       </div>
     </div>
@@ -39,14 +46,22 @@ export default {
     BtnSettings,
     BtnLangSwap,
   },
-  data() {
-    return {
-      username: "",
-      role: "",
-      usedSpace: 0,
-      allSpace: 0,
-      unitSpace: "B",
-    };
+  computed: {
+    usedSpaceWidth() {
+      return `${Math.round(this.$user.usedSpace / this.$user.allSpace)}%`;
+    },
+    usedSpace() {
+      return this.$convertSpaceByUnit(this.$user.usedSpace, this.usedUnit);
+    },
+    usedUnit() {
+      return this.$getUnitBySpace(this.$user.usedSpace);
+    },
+    allSpace() {
+      return this.$convertSpaceByUnit(this.$user.allSpace, this.allUnit);
+    },
+    allUnit() {
+      return this.$getUnitBySpace(this.$user.allSpace);
+    },
   },
 };
 </script>
@@ -94,6 +109,7 @@ export default {
   box-sizing: border-box;
   border-radius: 4px;
   overflow: hidden;
+  background-color: #f1f2f3;
   .used {
     box-sizing: border-box;
     padding: 0 0.4em;

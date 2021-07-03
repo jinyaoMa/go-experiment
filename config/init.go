@@ -14,7 +14,7 @@ const (
 )
 
 func GenerateToken(len int) (string, time.Time) {
-	t := time.Now()
+	t := time.Now().AddDate(0, 1, 0) // add a month
 	r := rand.New(rand.NewSource(t.Unix()))
 	bytes := make([]byte, len)
 	for i := 0; i < len; i++ {

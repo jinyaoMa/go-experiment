@@ -1,11 +1,25 @@
 <template>
   <div id="app">
-    <router-view />
+    <router-view
+      :class="{
+        'loading-covered': $loading,
+      }"
+    />
+    <Loading v-if="$loading" />
   </div>
 </template>
 
 <script>
-export default {};
+import Loading from "./components/Loading.vue";
+export default {
+  components: {
+    Loading,
+  },
+  mounted() {
+    console.log(this);
+    this.$stopLoading();
+  },
+};
 </script>
 
 <style lang="scss">
@@ -22,5 +36,9 @@ body {
   font-weight: 500;
   font-size: 16px;
   line-height: 1.3;
+}
+.loading-covered {
+  filter: opacity(0.3);
+  pointer-events: none;
 }
 </style>

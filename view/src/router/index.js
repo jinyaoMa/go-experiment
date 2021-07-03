@@ -9,6 +9,9 @@ const routes = [
     name: "Login",
     component() {
       return import(/* webpackChunkName: "login" */ "../views/Login.vue");
+    },
+    meta: {
+      spinAtCorner: true
     }
   },
   {
@@ -16,6 +19,9 @@ const routes = [
     name: "Signup",
     component() {
       return import(/* webpackChunkName: "signup" */ "../views/Signup.vue");
+    },
+    meta: {
+      spinAtCorner: true
     }
   },
   {
@@ -23,6 +29,9 @@ const routes = [
     name: "Home",
     component() {
       return import(/* webpackChunkName: "home" */ "../views/Home.vue");
+    },
+    meta: {
+      spinAtCorner: false
     }
   }
 ];

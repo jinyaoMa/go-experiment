@@ -66,10 +66,27 @@ export default {
   },
   methods: {
     handleLogin() {
-      this.$http.post("/api/login", {
-        account: this.account,
-        password: this.password,
-      });
+      this.$startLoading();
+      this.$http
+        .post("/api/login", {
+          account: this.account,
+          password: this.password,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            let data = res.data.data;
+            this.$setUser({
+              id: data.userid,
+              name: data.username,
+              role: data.role,
+              usedSpace: data.usedSpace,
+              allSpace: data.allSpace,
+              token: data.token,
+            });
+            this.$router.push("/");
+            this.$stopLoading();
+          }
+        });
     },
     handleCleanAccount() {
       this.account = "";
