@@ -23,11 +23,10 @@ export default {
             this.$setUser({
               id: 0,
             });
-            this.$router.push("/login");
-            this.$stopLoading();
           } else {
-            this.$stopLoading();
           }
+          this.$router.push("/login");
+          this.$stopLoading();
         })
         .catch((err) => {
           this.$router.push("/login");

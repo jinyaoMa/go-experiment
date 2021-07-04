@@ -36,7 +36,7 @@ func initUserAdmin(db *gorm.DB) User {
 		resultRole := db.First(&role, "name = ?", ROLE_ADMIN)
 		if resultRole.RowsAffected == 1 {
 			var userFiles []File
-			err := workspace.InitUserWorkspace("/admin", func(path string, fileInfo os.FileInfo) {
+			err := workspace.InitUserWorkspace("admin", func(path string, fileInfo os.FileInfo) {
 				var typ string
 				if fileInfo.IsDir() {
 					typ = FILE_TYPE_DIRECTORY

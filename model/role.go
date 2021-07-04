@@ -20,7 +20,7 @@ const (
 type Role struct {
 	gorm.Model
 	Name       string
-	Permission string
+	Permission string `gorm:"default:'CORE:1,SHARE:0,ADMIN:0'"`
 	Space      uint64 `gorm:"default:0"`
 }
 
@@ -28,11 +28,15 @@ func initDefaultRoles(db *gorm.DB) {
 	roles := []Role{
 		{
 			Name:       ROLE_ADMIN,
-			Permission: "*",
+			Permission: "CORE:1,SHARE:1,ADMIN:1",
 		}, {
-			Name: ROLE_VIP,
+			Name:       ROLE_VIP,
+			Permission: "CORE:1,SHARE:1,ADMIN:0",
+			Space:      666 * 1024 * 1024,
 		}, {
-			Name: ROLE_MEMBER,
+			Name:       ROLE_MEMBER,
+			Permission: "CORE:1,SHARE:0,ADMIN:0",
+			Space:      233 * 1024 * 1024,
 		},
 	}
 

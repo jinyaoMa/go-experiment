@@ -1,10 +1,15 @@
 package workspace
 
 import (
+	"errors"
 	"fmt"
 	"jinyaoma/go-experiment/config"
 	"os"
 	"path/filepath"
+)
+
+const (
+	WORKSPACE_ERROR_WORKSPACE_EXIST = "workspace exist"
 )
 
 var (
@@ -24,6 +29,16 @@ func GetDisk() *Disk {
 }
 
 type UserFilesFunc func(path string, fileInofo os.FileInfo)
+
+func NewUserWorkspace(userAccount string, fn UserFilesFunc) error {
+	targetPath := filepath.Join(config.WORKSPACE, userAccount)
+	err := os.Mkdir(targetPath, os.ModeDir)
+	if os.IsExist(err) {
+		return errors.New(WORKSPACE_ERROR_WORKSPACE_EXIST)
+	}
+	initUserFiles(targetPath, fn)
+	return nil
+}
 
 func InitUserWorkspace(userAccount string, fn UserFilesFunc) error {
 	if !config.WORKSPACE_CAN_INITIALIZE {

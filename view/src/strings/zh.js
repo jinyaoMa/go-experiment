@@ -4,6 +4,8 @@ export default {
     btnLangTips: "Click to use English (currently in Chinese)",
     btnSettingsTips: "设置",
     btnLogout: "退出登录",
+    usedSpace: "已用空间",
+    allSpace: "总容量",
     all: "全部文件",
     pictures: "图片",
     documents: "文档",

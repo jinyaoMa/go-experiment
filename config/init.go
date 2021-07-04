@@ -11,6 +11,8 @@ const (
 	WORKSPACE_CAN_INITIALIZE  = true
 
 	SERVER_PORT = ":3000"
+
+	DEFAULT_SIGNUP_ROLE_NAME = "member"
 )
 
 func GenerateToken(len int) (string, time.Time) {

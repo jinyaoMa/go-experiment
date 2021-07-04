@@ -22,7 +22,7 @@
       >
         {{ $user.role }}
       </div>
-      <div class="user-space">
+      <div class="user-space" :title="userSpaceTitle">
         <div
           class="used"
           :style="{
@@ -50,6 +50,9 @@ export default {
     BtnLangSwap,
   },
   computed: {
+    userSpaceTitle() {
+      return `${this.$locale.common.usedSpace}: ${this.usedSpace} ${this.usedUnit}\n${this.$locale.common.allSpace}: ${this.allSpace} ${this.allUnit}`;
+    },
     usedSpaceWidth() {
       return `${Math.round(this.$user.usedSpace / this.$user.allSpace)}%`;
     },
@@ -90,6 +93,7 @@ export default {
 }
 .user-name {
   font-size: 1.5em;
+  font-weight: bold;
   margin-left: 0.6em;
   &.empty {
     width: 6.66em;
@@ -106,7 +110,7 @@ export default {
   }
 }
 .user-space {
-  margin-left: 1em;
+  margin-left: 1.9em;
   width: 280px;
   border: 1px solid;
   box-sizing: border-box;

@@ -20,6 +20,7 @@ func RunRouter() {
 		})
 		InitLogin(api)
 		InitLogout(api)
+		InitSignup(api)
 	}
 
 	router.Run(config.SERVER_PORT)

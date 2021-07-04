@@ -11,6 +11,7 @@
             type="text"
             :placeholder="$locale.signup.usernamePlaceholder"
             v-model="username"
+            @keyup.enter="handleSignup"
           />
           <div v-if="username" class="clean-input">
             <i class="fas fa-times" @click="handleCleanUsername"></i>
@@ -25,6 +26,7 @@
             type="text"
             :placeholder="$locale.signup.accountPlaceholder"
             v-model="account"
+            @keyup.enter="handleSignup"
           />
           <div v-if="account" class="clean-input">
             <i class="fas fa-times" @click="handleCleanAccount"></i>
@@ -39,6 +41,7 @@
             type="password"
             :placeholder="$locale.signup.passwordPlaceholder"
             v-model="password"
+            @keyup.enter="handleSignup"
           />
           <div v-if="password" class="clean-input">
             <i class="fas fa-times" @click="handleCleanPassword"></i>
@@ -55,6 +58,7 @@
             type="password"
             :placeholder="$locale.signup.confirmPasswordPlaceholder"
             v-model="confirmPassword"
+            @keyup.enter="handleSignup"
           />
           <div v-if="confirmPassword" class="clean-input">
             <i class="fas fa-times" @click="handleCleanConfirmPassword"></i>
@@ -62,7 +66,9 @@
         </div>
       </div>
       <div class="form-item">
-        <button class="btn-submit">{{ $locale.signup.submit }}</button>
+        <button class="btn-submit" @click="handleSignup">
+          {{ $locale.signup.submit }}
+        </button>
       </div>
       <div class="form-item back-option">
         {{ $locale.signup.back }}
@@ -93,6 +99,35 @@ export default {
     };
   },
   methods: {
+    handleSignup() {
+      this.$startLoading();
+      this.$http
+        .post("/api/signup", {
+          username: this.username,
+          account: this.account,
+          password: this.password,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            let data = res.data.data;
+            this.$setUser({
+              id: data.userid,
+              name: data.username,
+              role: data.role,
+              usedSpace: data.usedSpace,
+              allSpace: data.allSpace,
+              token: data.token,
+            });
+            this.$router.push("/");
+            this.$stopLoading();
+          } else {
+            this.$stopLoading();
+          }
+        })
+        .catch((err) => {
+          this.$stopLoading();
+        });
+    },
     handleCleanUsername() {
       this.username = "";
     },
