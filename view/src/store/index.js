@@ -21,7 +21,7 @@ const saveLang = (lang) => {
   );
 };
 
-const loadUser = (o) => {
+export const loadUser = (o) => {
   if (typeof window === "undefined") return {};
   try {
     return JSON.parse(

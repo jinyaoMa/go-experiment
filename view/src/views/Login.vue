@@ -88,6 +88,9 @@ export default {
           } else {
             this.$stopLoading();
           }
+        })
+        .catch((err) => {
+          this.$stopLoading();
         });
     },
     handleCleanAccount() {

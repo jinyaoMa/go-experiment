@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import { loadUser } from "../store";
 
 Vue.use(VueRouter);
 
@@ -11,7 +12,8 @@ const routes = [
       return import(/* webpackChunkName: "login" */ "../views/Login.vue");
     },
     meta: {
-      spinAtCorner: true
+      spinAtCorner: true,
+      requireAuth: false
     }
   },
   {
@@ -21,7 +23,8 @@ const routes = [
       return import(/* webpackChunkName: "signup" */ "../views/Signup.vue");
     },
     meta: {
-      spinAtCorner: true
+      spinAtCorner: true,
+      requireAuth: false
     }
   },
   {
@@ -31,13 +34,39 @@ const routes = [
       return import(/* webpackChunkName: "home" */ "../views/Home.vue");
     },
     meta: {
-      spinAtCorner: false
+      spinAtCorner: false,
+      requireAuth: true
     }
   }
 ];
 
 const router = new VueRouter({
   routes
+});
+
+const isLogin = (o) => {
+  const data = loadUser();
+  return (
+    typeof data.user.id === "number" &&
+    data.user.id > 0 &&
+    typeof data.user.token === "string" &&
+    data.user.token.length === 128
+  );
+};
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requireAuth)) {
+    if (!isLogin()) {
+      next({
+        path: "/login",
+        query: { redirect: to.fullPath }
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

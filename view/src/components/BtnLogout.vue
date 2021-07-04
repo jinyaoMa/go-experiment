@@ -28,6 +28,10 @@ export default {
           } else {
             this.$stopLoading();
           }
+        })
+        .catch((err) => {
+          this.$router.push("/login");
+          this.$stopLoading();
         });
     },
   },
