@@ -3,6 +3,7 @@ export default {
     langTag: "Aa",
     btnLangTips: "当前语言为英语，点击使用简体中文",
     btnSettingsTips: "Settings",
+    btnLogout: "Log out",
     all: "All Files",
     pictures: "Pictures",
     documents: "Documents",
@@ -32,7 +33,7 @@ export default {
     confirmPasswordPlaceholder: "re-enter your password",
     submit: "SUBMIT",
     back: "Already have an account? Back to",
-    login: "login"
+    login: "log in"
   },
   home: {}
 };

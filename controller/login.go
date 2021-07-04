@@ -101,6 +101,6 @@ func login(c *gin.Context) {
 	})
 }
 
-func initLogin(rg *gin.RouterGroup) {
+func InitLogin(rg *gin.RouterGroup) {
 	rg.POST("/login", login)
 }

@@ -4,12 +4,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "btn-settings",
-};
-</script>
-
 <style lang="scss" scoped>
 .btn-settings {
   display: flex;

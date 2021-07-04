@@ -3,6 +3,7 @@ export default {
     langTag: "中",
     btnLangTips: "Click to use English (currently in Chinese)",
     btnSettingsTips: "设置",
+    btnLogout: "退出登录",
     all: "全部文件",
     pictures: "图片",
     documents: "文档",

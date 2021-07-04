@@ -1,6 +1,7 @@
 <template>
   <div class="head">
     <div class="options">
+      <BtnLogout />
       <BtnSettings />
       <BtnLangSwap />
     </div>
@@ -38,11 +39,13 @@
 </template>
 
 <script>
+import BtnLogout from "../components/BtnLogout.vue";
 import BtnSettings from "../components/BtnSettings.vue";
 import BtnLangSwap from "../components/BtnLangSwap.vue";
 
 export default {
   components: {
+    BtnLogout,
     BtnSettings,
     BtnLangSwap,
   },

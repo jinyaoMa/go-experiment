@@ -85,6 +85,8 @@ export default {
             });
             this.$router.push("/");
             this.$stopLoading();
+          } else {
+            this.$stopLoading();
           }
         });
     },

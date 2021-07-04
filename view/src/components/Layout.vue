@@ -80,6 +80,7 @@ export default {
     color: #333333;
     transition: 0.2s;
     position: relative;
+    background-color: #ffffff;
     &::before {
       content: "";
       position: absolute;

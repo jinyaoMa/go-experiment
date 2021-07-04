@@ -8,12 +8,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "btn-lang-swap",
-};
-</script>
-
 <style lang="scss" scoped>
 .btn-lang-swap {
   display: flex;

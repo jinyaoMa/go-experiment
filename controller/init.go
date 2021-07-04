@@ -18,7 +18,8 @@ func RunRouter() {
 				"message": "pong",
 			})
 		})
-		initLogin(api)
+		InitLogin(api)
+		InitLogout(api)
 	}
 
 	router.Run(config.SERVER_PORT)
