@@ -7,7 +7,9 @@
             currentPath: '',
           },
         }"
-        exact
+        :class="{
+          'router-link-exact-active': $route.fullPath === '/',
+        }"
       >
         {{ $locale.common.all }}
       </router-link>
@@ -20,20 +22,44 @@
                 currentPath: path.path,
               },
             }"
-            exact
           >
             {{ path.name }}
           </router-link>
         </div>
       </template>
     </div>
-    <div class="breadcrumb-end"></div>
+    <div class="breadcrumb-end">
+      <span v-if="checkedCount > 0">{{ selectedText }}</span>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    checkedCount: {
+      type: Number,
+      default() {
+        return 0;
+      },
+    },
+    allChecked: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
+  },
   computed: {
+    selectedText() {
+      if (this.allChecked) {
+        return this.$locale.common.selected.all.replace("?", this.checkedCount);
+      }
+      if (this.checkedCount === 1) {
+        return this.$locale.common.selected.one.replace("?", this.checkedCount);
+      }
+      return this.$locale.common.selected.more.replace("?", this.checkedCount);
+    },
     paths() {
       let currentPath = this.$route.query.currentPath;
       let arr = [];
@@ -63,7 +89,7 @@ export default {
 .breadcrumb {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   font-size: 0.8em;
   line-height: 3.75;
@@ -81,7 +107,7 @@ export default {
     &:hover {
       text-decoration: underline;
     }
-    &.router-link-active {
+    &.router-link-exact-active {
       cursor: default;
       text-decoration: none;
       color: #333333;

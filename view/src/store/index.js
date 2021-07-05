@@ -72,7 +72,9 @@ Vue.mixin({
       $stopLoading: "stopLoading",
       $swapLang: "swapLang",
       $setUser: "setUser",
-      $setFiles: "setFiles"
+      $setFiles: "setFiles",
+      $setFileCheckById: "setFileCheckById",
+      $clearChecklist: "clearChecklist"
     }),
     $getUnitBySpace(space) {
       if (space < KB) {
@@ -166,7 +168,23 @@ export default new Vuex.Store({
       saveUser(state.user);
     },
     setFiles(state, files) {
+      for (let i = 0; i < files.length; i++) {
+        files[i].isChecked = false; // add for checklist
+      }
       state.files = files;
+    },
+    setFileCheckById(state, { fileId, isChecked }) {
+      for (let i = 0; i < state.files.length; i++) {
+        if (state.files[i].ID === fileId) {
+          state.files[i].isChecked = isChecked;
+          break;
+        }
+      }
+    },
+    clearChecklist(state) {
+      for (let i = 0; i < state.files.length; i++) {
+        state.files[i].isChecked = false;
+      }
     }
   },
   actions: {
@@ -184,6 +202,12 @@ export default new Vuex.Store({
     },
     setFiles(context, files) {
       context.commit("setFiles", files);
+    },
+    setFileCheckById(context, options) {
+      context.commit("setFileCheckById", options);
+    },
+    clearChecklist(context) {
+      context.commit("clearChecklist");
     }
   }
 });

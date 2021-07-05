@@ -15,6 +15,7 @@ export default {
     share: "我的分享",
     recycle: "回收站",
     upload: "上传",
+    download: "下载",
     newFolder: "新建文件夹",
     searchPlaceholder: "搜索",
     loaded: {
@@ -24,6 +25,11 @@ export default {
     searchCompleted: {
       one: "已完成搜索，共 ? 项",
       more: "已完成搜索，共 ? 项"
+    },
+    selected: {
+      one: "已选中 ? 个文件/文件夹",
+      more: "已选中 ? 个文件/文件夹",
+      all: "已全选，共 ? 个文件/文件夹"
     }
   },
   login: {

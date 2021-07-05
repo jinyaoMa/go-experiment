@@ -3,6 +3,9 @@
     <div class="start">
       <button class="btn-upload">{{ $locale.common.upload }}</button>
       <button class="btn-new-folder">{{ $locale.common.newFolder }}</button>
+      <button v-if="filesToDownload.length > 0" class="btn-download">
+        {{ $locale.common.download }}
+      </button>
     </div>
     <div class="end">
       <div class="loaded">
@@ -37,6 +40,12 @@ export default {
       type: Number,
       default() {
         return 0;
+      },
+    },
+    filesToDownload: {
+      type: Array,
+      default() {
+        return [];
       },
     },
   },
@@ -81,6 +90,9 @@ export default {
       searchComplete: false,
     };
   },
+  mounted() {
+    console.log(this);
+  },
 };
 </script>
 
@@ -120,7 +132,8 @@ export default {
     background-color: #555555;
   }
 }
-.btn-new-folder {
+.btn-new-folder,
+.btn-download {
   font-weight: 500;
   background-color: #f1f2f3;
   &:hover {

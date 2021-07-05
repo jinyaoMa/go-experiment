@@ -1,10 +1,10 @@
 <template>
   <i
-    class="check-square far"
+    class="check-square"
     :class="{
-      'fa-check-square': this.isChecked,
-      'fa-square': !this.isChecked,
-      'fa-minus-square': this.isPrepared,
+      'fas fa-check-square': !this.prepared && this.checked,
+      'far fa-square': !this.prepared && !this.checked,
+      'fas fa-minus-square': this.prepared,
     }"
     @click="handleClick"
   />
@@ -13,6 +13,12 @@
 <script>
 export default {
   props: {
+    fileId: {
+      type: Number,
+      default() {
+        return 0;
+      },
+    },
     checked: {
       type: Boolean,
       default() {
@@ -26,16 +32,9 @@ export default {
       },
     },
   },
-  data() {
-    return {
-      isChecked: this.checked,
-      isPrepared: this.prepared,
-    };
-  },
   methods: {
     handleClick() {
-      this.isChecked = !this.isChecked;
-      this.$emit("click", this.isChecked);
+      this.$emit("click", this.fileId, !this.checked);
     },
   },
 };

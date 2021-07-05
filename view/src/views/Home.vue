@@ -4,15 +4,26 @@
       <TaskBar
         ref="taskBar"
         :currentFilesCount="currentFiles.length"
+        :filesToDownload="filesToDownload"
         @search="handleSearch"
       />
       <div class="home-frame">
-        <Breadcrumb />
+        <Breadcrumb
+          :checkedCount="checkedItemsAmount"
+          :allChecked="checkedItemsAmount === currentFiles.length"
+        />
         <table>
           <thead>
             <tr>
               <td class="col-select">
-                <CheckSquare />
+                <CheckSquare
+                  :prepared="
+                    checkedItemsAmount > 0 &&
+                    checkedItemsAmount < currentFiles.length
+                  "
+                  :checked="checkedItemsAmount === currentFiles.length"
+                  @click="handleAllCheck"
+                />
               </td>
               <td @click="handleSortName">
                 {{ $locale.home.filename }}
@@ -51,7 +62,7 @@
                   <span
                     v-if="searchKeyword"
                     class="col-filename-start back"
-                    @click="handleEndSearch"
+                    @click="handleClearOpts"
                   >
                     <i class="fas fa-arrow-left fa-fw" />
                     {{ $locale.home.endSearch }}
@@ -73,7 +84,11 @@
             </tr>
             <tr v-for="file in currentFiles" :key="file.ID">
               <td class="col-select">
-                <CheckSquare :checked="file.isSelected" />
+                <CheckSquare
+                  :fileId="file.ID"
+                  :checked="file.isChecked"
+                  @click="handleSingleCheck"
+                />
               </td>
               <td>
                 <div class="col-filename">
@@ -129,11 +144,23 @@ export default {
   watch: {
     $route: {
       handler() {
-        this.handleEndSearch();
+        this.handleClearOpts();
       },
     },
   },
   methods: {
+    handleAllCheck(_, checked) {
+      if (!checked) {
+        this.$clearChecklist();
+      } else {
+        this.currentFiles.forEach((file) => {
+          file.isChecked = true;
+        });
+      }
+    },
+    handleSingleCheck(fileId, checked) {
+      this.$setFileCheckById({ fileId, isChecked: checked });
+    },
     handleSortName() {
       if (this.sortBy === "Name") {
         this.sortOrder = this.sortOrder === "ASC" ? "DESC" : "ASC";
@@ -158,9 +185,10 @@ export default {
         this.sortOrder = "DESC";
       }
     },
-    handleEndSearch() {
+    handleClearOpts() {
       this.searchKeyword = "";
       this.$refs.taskBar.clearSearchKeyword();
+      this.$clearChecklist();
     },
     handleSearch(keyword, complete) {
       this.searchKeyword = keyword;
@@ -168,6 +196,12 @@ export default {
     },
   },
   computed: {
+    filesToDownload() {
+      return this.currentUnsortedFiles.filter((file) => file.isChecked);
+    },
+    checkedItemsAmount() {
+      return this.currentUnsortedFiles.filter((item) => item.isChecked).length;
+    },
     parentPath() {
       let currentPath = this.$route.query.currentPath;
       if (typeof currentPath === "string" && currentPath.length > 0) {
@@ -303,7 +337,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   table-layout: fixed;
-  margin-top: 1em;
+  margin-bottom: 1em;
   thead {
     font-weight: bold;
     td {
@@ -316,7 +350,7 @@ table {
         i {
           color: #2196f3;
           transform-origin: left center;
-          transform: scale(1.3);
+          transform: scale(1.12);
         }
       }
     }

@@ -15,6 +15,7 @@ export default {
     share: "My Share",
     recycle: "Recycle Bin",
     upload: "Upload",
+    download: "Download",
     newFolder: "New Folder",
     searchPlaceholder: "Search",
     loaded: {
@@ -24,6 +25,11 @@ export default {
     searchCompleted: {
       one: "Total ? item found",
       more: "Total ? items found"
+    },
+    selected: {
+      one: "Total ? file/folder selected",
+      more: "Total ? files/folders selected",
+      all: "All selected, total ? files/folders"
     }
   },
   login: {
