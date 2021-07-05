@@ -83,6 +83,7 @@ export default {
               allSpace: data.allSpace,
               token: data.token,
             });
+            this.$setFiles(data.files);
             this.$router.push("/");
             this.$stopLoading();
           } else {

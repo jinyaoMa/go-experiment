@@ -77,6 +77,15 @@ func login(c *gin.Context) {
 		return
 	}
 
+	var files []model.File
+	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
+	if resultFiles.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
 	var allSpace uint64
 	disk := workspace.GetDisk()
 	disk.Update()
@@ -97,6 +106,7 @@ func login(c *gin.Context) {
 			"token":     user.Token,
 			"usedSpace": usedSpace,
 			"allSpace":  allSpace,
+			"files":     files,
 		},
 	})
 }

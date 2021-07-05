@@ -13,7 +13,10 @@ export default {
     music: "Music",
     other: "Other",
     share: "My Share",
-    recycle: "Recycle Bin"
+    recycle: "Recycle Bin",
+    upload: "Upload",
+    newFolder: "New Folder",
+    searchPlaceholder: "Search"
   },
   login: {
     account: "Account",
@@ -37,5 +40,9 @@ export default {
     back: "Already have an account? Back to",
     login: "log in"
   },
-  home: {}
+  home: {
+    filename: "Filename",
+    size: "Size",
+    modifiedAt: "Modified At"
+  }
 };

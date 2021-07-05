@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import * as moment from "moment";
 import ZH from "../strings/zh";
 import EN from "../strings/en";
 
@@ -61,7 +62,8 @@ Vue.mixin({
     ...Vuex.mapGetters({
       $loading: "loading",
       $locale: "locale",
-      $user: "user"
+      $user: "user",
+      $files: "files"
     })
   },
   methods: {
@@ -69,7 +71,8 @@ Vue.mixin({
       $startLoading: "startLoading",
       $stopLoading: "stopLoading",
       $swapLang: "swapLang",
-      $setUser: "setUser"
+      $setUser: "setUser",
+      $setFiles: "setFiles"
     }),
     $getUnitBySpace(space) {
       if (space < KB) {
@@ -93,6 +96,13 @@ Vue.mixin({
         default:
           return space;
       }
+    },
+    $convertSpace2String(space) {
+      const unit = this.$getUnitBySpace(space);
+      return `${this.$convertSpaceByUnit(space, unit)} ${unit}`;
+    },
+    $formatDate(date, fmtStr) {
+      return moment(date).format(fmtStr);
     }
   }
 });
@@ -110,7 +120,8 @@ export default new Vuex.Store({
       allSpace: 0,
       token: ""
     },
-    ...loadUser()
+    ...loadUser(),
+    files: []
   },
   getters: {
     loading(state) {
@@ -127,6 +138,9 @@ export default new Vuex.Store({
     },
     user(state) {
       return state.user;
+    },
+    files(state) {
+      return state.files;
     }
   },
   mutations: {
@@ -150,6 +164,9 @@ export default new Vuex.Store({
     setUser(state, user) {
       Object.assign(state.user, user);
       saveUser(state.user);
+    },
+    setFiles(state, files) {
+      state.files = files;
     }
   },
   actions: {
@@ -164,6 +181,9 @@ export default new Vuex.Store({
     },
     setUser(context, user) {
       context.commit("setUser", user);
+    },
+    setFiles(context, files) {
+      context.commit("setFiles", files);
     }
   }
 });

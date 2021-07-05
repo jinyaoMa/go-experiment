@@ -103,6 +103,7 @@ func signup(c *gin.Context) {
 			"token":     newUser.Token,
 			"usedSpace": 0,
 			"allSpace":  allSpace,
+			"files":     newUser.Files,
 		},
 	})
 }

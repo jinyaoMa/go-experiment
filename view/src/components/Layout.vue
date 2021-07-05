@@ -70,9 +70,11 @@ export default {
 }
 .cat {
   position: relative;
-  min-width: 240px;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+  border-right: 2px solid #f1f2f3;
   > a {
     padding: 0 1.8em;
     line-height: 3em;
@@ -81,6 +83,7 @@ export default {
     transition: 0.2s;
     position: relative;
     background-color: #ffffff;
+    user-select: none;
     &::before {
       content: "";
       position: absolute;
@@ -103,5 +106,10 @@ export default {
       margin-right: 0.6em;
     }
   }
+}
+.frame {
+  flex-grow: 1;
+  padding: 0 1.6em;
+  position: relative;
 }
 </style>

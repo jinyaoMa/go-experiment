@@ -29,9 +29,7 @@
             width: usedSpaceWidth,
           }"
         >
-          <span>
-            {{ usedSpace }} {{ usedUnit }} / {{ allSpace }} {{ allUnit }}
-          </span>
+          <span> {{ usedSpace }} / {{ allSpace }} </span>
         </div>
       </div>
     </div>
@@ -51,22 +49,16 @@ export default {
   },
   computed: {
     userSpaceTitle() {
-      return `${this.$locale.common.usedSpace}: ${this.usedSpace} ${this.usedUnit}\n${this.$locale.common.allSpace}: ${this.allSpace} ${this.allUnit}`;
+      return `${this.$locale.common.usedSpace}: ${this.usedSpace}\n${this.$locale.common.allSpace}: ${this.allSpace}`;
     },
     usedSpaceWidth() {
       return `${Math.round(this.$user.usedSpace / this.$user.allSpace)}%`;
     },
     usedSpace() {
-      return this.$convertSpaceByUnit(this.$user.usedSpace, this.usedUnit);
-    },
-    usedUnit() {
-      return this.$getUnitBySpace(this.$user.usedSpace);
+      return this.$convertSpace2String(this.$user.usedSpace);
     },
     allSpace() {
-      return this.$convertSpaceByUnit(this.$user.allSpace, this.allUnit);
-    },
-    allUnit() {
-      return this.$getUnitBySpace(this.$user.allSpace);
+      return this.$convertSpace2String(this.$user.allSpace);
     },
   },
 };
@@ -105,6 +97,8 @@ export default {
   background-color: #f1f2f3;
   padding: 0.3em 0.6em;
   border-radius: 4px;
+  cursor: default;
+  user-select: none;
   &.empty {
     width: 2.33em;
   }
@@ -112,16 +106,17 @@ export default {
 .user-space {
   margin-left: 1.9em;
   width: 280px;
-  border: 1px solid;
+  border: 2px solid;
   box-sizing: border-box;
   border-radius: 4px;
   overflow: hidden;
   background-color: #f1f2f3;
+  user-select: none;
   .used {
     box-sizing: border-box;
     padding: 0 0.4em;
     height: 100%;
-    line-height: 100%;
+    line-height: calc(100% - 2px);
     min-width: min-content;
     max-width: 100%;
     width: 0%;

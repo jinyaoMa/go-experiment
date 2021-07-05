@@ -13,7 +13,10 @@ export default {
     music: "音乐",
     other: "其他",
     share: "我的分享",
-    recycle: "回收站"
+    recycle: "回收站",
+    upload: "上传",
+    newFolder: "新建文件夹",
+    searchPlaceholder: "搜索"
   },
   login: {
     account: "帐号",
@@ -37,5 +40,9 @@ export default {
     back: "已经有账号，返回",
     login: "登录"
   },
-  home: {}
+  home: {
+    filename: "文件名",
+    size: "大小",
+    modifiedAt: "修改日期"
+  }
 };

@@ -58,7 +58,11 @@ func initUserFiles(userPath string, fn UserFilesFunc) {
 		if f == nil {
 			return err
 		}
-		fn(p, f)
+		relPath, errRelPath := filepath.Rel(userPath, p)
+		if errRelPath != nil {
+			return errRelPath
+		}
+		fn(relPath, f)
 		return nil
 	})
 	if err != nil {
