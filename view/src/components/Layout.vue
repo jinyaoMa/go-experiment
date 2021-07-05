@@ -4,35 +4,35 @@
     <div class="main">
       <div class="cat">
         <Copyright />
-        <router-link to="/">
+        <router-link to="/" exact-path>
           <i class="fas fa-file fa-fw" />
           {{ $locale.common.all }}
         </router-link>
-        <router-link to="/picture">
+        <router-link to="/picture" exact-path>
           <i class="fas fa-fw" />
           {{ $locale.common.pictures }}
         </router-link>
-        <router-link to="/documents">
+        <router-link to="/documents" exact-path>
           <i class="fas fa-fw" />
           {{ $locale.common.documents }}
         </router-link>
-        <router-link to="/videos">
+        <router-link to="/videos" exact-path>
           <i class="fas fa-fw" />
           {{ $locale.common.videos }}
         </router-link>
-        <router-link to="/music">
+        <router-link to="/music" exact-path>
           <i class="fas fa-fw" />
           {{ $locale.common.music }}
         </router-link>
-        <router-link to="/other">
+        <router-link to="/other" exact-path>
           <i class="fas fa-fw" />
           {{ $locale.common.other }}
         </router-link>
-        <router-link to="/share">
+        <router-link to="/share" exact-path>
           <i class="fas fa-share-alt fa-fw" />
           {{ $locale.common.share }}
         </router-link>
-        <router-link to="/recycle">
+        <router-link to="/recycle" exact-path>
           <i class="fas fa-trash-alt fa-fw" />
           {{ $locale.common.recycle }}
         </router-link>

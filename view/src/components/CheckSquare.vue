@@ -4,6 +4,7 @@
     :class="{
       'fa-check-square': this.isChecked,
       'fa-square': !this.isChecked,
+      'fa-minus-square': this.isPrepared,
     }"
     @click="handleClick"
   />
@@ -18,10 +19,17 @@ export default {
         return false;
       },
     },
+    prepared: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
   },
   data() {
     return {
       isChecked: this.checked,
+      isPrepared: this.prepared,
     };
   },
   methods: {
