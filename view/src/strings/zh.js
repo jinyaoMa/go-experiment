@@ -16,7 +16,15 @@ export default {
     recycle: "回收站",
     upload: "上传",
     newFolder: "新建文件夹",
-    searchPlaceholder: "搜索"
+    searchPlaceholder: "搜索",
+    loaded: {
+      one: "已全部加载，共 ? 项",
+      more: "已全部加载，共 ? 项"
+    },
+    searchCompleted: {
+      one: "已完成搜索，共 ? 项",
+      more: "已完成搜索，共 ? 项"
+    }
   },
   login: {
     account: "帐号",
@@ -43,6 +51,8 @@ export default {
   home: {
     filename: "文件名",
     size: "大小",
-    modifiedAt: "修改日期"
+    modifiedAt: "修改日期",
+    back2Parent: "返回上一级",
+    endSearch: "结束搜索"
   }
 };

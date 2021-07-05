@@ -16,7 +16,15 @@ export default {
     recycle: "Recycle Bin",
     upload: "Upload",
     newFolder: "New Folder",
-    searchPlaceholder: "Search"
+    searchPlaceholder: "Search",
+    loaded: {
+      one: "Total ? item loaded",
+      more: "Total ? items loaded"
+    },
+    searchCompleted: {
+      one: "Total ? item found",
+      more: "Total ? items found"
+    }
   },
   login: {
     account: "Account",
@@ -41,8 +49,10 @@ export default {
     login: "log in"
   },
   home: {
-    filename: "Filename",
+    filename: "File/Folder Name",
     size: "Size",
-    modifiedAt: "Modified At"
+    modifiedAt: "Modified At",
+    back2Parent: "Go back",
+    endSearch: "Close Search"
   }
 };

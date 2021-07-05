@@ -18,6 +18,7 @@ const (
 
 type File struct {
 	gorm.Model
+	Name           string
 	Path           string `gorm:"not null;index"`
 	Type           string `gorm:"check:type IN ('directory', 'file');not null"`
 	Extension      string

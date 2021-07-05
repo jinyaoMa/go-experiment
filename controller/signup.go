@@ -52,6 +52,7 @@ func signup(c *gin.Context) {
 			typ = model.FILE_TYPE_FILE
 		}
 		userFiles = append(userFiles, model.File{
+			Name:      filepath.Base(path),
 			Path:      path,
 			Type:      typ,
 			Extension: filepath.Ext(path),

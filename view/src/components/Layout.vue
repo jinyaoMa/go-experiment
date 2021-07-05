@@ -70,7 +70,7 @@ export default {
 }
 .cat {
   position: relative;
-  min-width: 200px;
+  min-width: 240px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -97,7 +97,7 @@ export default {
     &:hover {
       background-color: #f1f2f3aa;
     }
-    &.router-link-exact-active {
+    &.router-link-active {
       &::before {
         width: 0.4em;
       }

@@ -44,6 +44,7 @@ func initUserAdmin(db *gorm.DB) User {
 					typ = FILE_TYPE_FILE
 				}
 				userFiles = append(userFiles, File{
+					Name:      filepath.Base(path),
 					Path:      path,
 					Type:      typ,
 					Extension: filepath.Ext(path),
