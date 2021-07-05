@@ -28,6 +28,17 @@ const routes = [
     }
   },
   {
+    path: "/settings",
+    name: "Settings",
+    component() {
+      return import(/* webpackChunkName: "settings" */ "../views/Settings.vue");
+    },
+    meta: {
+      spinAtCorner: false,
+      requireAuth: true
+    }
+  },
+  {
     path: "*",
     name: "Home",
     component() {
