@@ -15,6 +15,10 @@ const (
 	DEFAULT_SIGNUP_ROLE_NAME = "member"
 )
 
+var (
+	User_Limit = 5
+)
+
 func GenerateToken(len int) (string, time.Time) {
 	t := time.Now().AddDate(0, 1, 0) // add a month
 	r := rand.New(rand.NewSource(t.Unix()))

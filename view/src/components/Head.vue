@@ -2,7 +2,8 @@
   <div class="head">
     <div class="options">
       <BtnLogout />
-      <BtnSettings />
+      <BtnHome v-if="isSettings" />
+      <BtnSettings v-else />
       <BtnLangSwap />
     </div>
     <div class="user">
@@ -38,12 +39,22 @@
 
 <script>
 import BtnLogout from "../components/BtnLogout.vue";
+import BtnHome from "../components/BtnHome.vue";
 import BtnSettings from "../components/BtnSettings.vue";
 import BtnLangSwap from "../components/BtnLangSwap.vue";
 
 export default {
+  props: {
+    isSettings: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
+  },
   components: {
     BtnLogout,
+    BtnHome,
     BtnSettings,
     BtnLangSwap,
   },

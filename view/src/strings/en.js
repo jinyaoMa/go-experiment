@@ -3,6 +3,7 @@ export default {
     langTag: "Aa",
     btnLangTips: "当前语言为英语，点击使用简体中文",
     btnSettingsTips: "Settings",
+    btnHomeTips: "Back to content management",
     btnLogout: "Log out",
     usedSpace: "Used",
     allSpace: "Total",
@@ -60,5 +61,25 @@ export default {
     modifiedAt: "Modified At",
     back2Parent: "Go back",
     endSearch: "Close Search"
+  },
+  settings: {
+    resetPassword: {
+      title: "Reset Your Password",
+      oldPassword: "Old Password",
+      oldPasswordPlaceholder: "your old password",
+      newPassword: "New Password",
+      newPasswordPlaceholder: "your new password",
+      confirmNewPassword: "Confirm New Password",
+      confirmNewPasswordPlaceholder: "re-enter your new password",
+      submit: "Reset"
+    },
+    basic: {
+      title: "Basic Settings",
+      userLimit: "Limit of total registered users",
+      submit: "Submit"
+    },
+    roleManagement: {
+      title: "Role Management"
+    }
   }
 };

@@ -3,6 +3,7 @@ export default {
     langTag: "中",
     btnLangTips: "Click to use English (currently in Chinese)",
     btnSettingsTips: "设置",
+    btnHomeTips: "返回网盘",
     btnLogout: "退出登录",
     usedSpace: "已用空间",
     allSpace: "总容量",
@@ -60,5 +61,25 @@ export default {
     modifiedAt: "修改日期",
     back2Parent: "返回上一级",
     endSearch: "结束搜索"
+  },
+  settings: {
+    resetPassword: {
+      title: "重置密码",
+      oldPassword: "旧密码",
+      oldPasswordPlaceholder: "旧密码填这就对了 |д･)っ",
+      newPassword: "新密码",
+      newPasswordPlaceholder: "输个新密码试试 |_・)",
+      confirmNewPassword: "确认新密码",
+      confirmNewPasswordPlaceholder: "再输一次新密码就行了 |_・)",
+      submit: "确认重置"
+    },
+    basic: {
+      title: "基础设置",
+      userLimit: "用户注册总数量限制",
+      submit: "提交设置"
+    },
+    roleManagement: {
+      title: "角色管理"
+    }
   }
 };

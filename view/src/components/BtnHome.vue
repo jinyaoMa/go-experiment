@@ -1,10 +1,10 @@
 <template>
   <div
-    class="btn-settings"
-    :title="$locale.common.btnSettingsTips"
+    class="btn-home"
+    :title="$locale.common.btnHomeTips"
     @click="handleClick"
   >
-    <i class="fas fa-cog" />
+    <i class="fas fa-hdd" />
   </div>
 </template>
 
@@ -12,14 +12,14 @@
 export default {
   methods: {
     handleClick() {
-      this.$router.push("/settings");
+      this.$router.push("/");
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.btn-settings {
+.btn-home {
   display: flex;
   width: 3em;
   height: 3em;
