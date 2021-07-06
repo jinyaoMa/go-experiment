@@ -90,9 +90,6 @@ export default {
       searchComplete: false,
     };
   },
-  mounted() {
-    console.log(this);
-  },
 };
 </script>
 

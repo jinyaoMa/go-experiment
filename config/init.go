@@ -6,17 +6,17 @@ import (
 )
 
 const (
-	WORKSPACE                 = "D:/WORKSPACE"
-	WORKSPACE_AVAILABLE_SPACE = 32 * 1024 * 1024 * 1024 // 32 GB
-	WORKSPACE_CAN_INITIALIZE  = true
+	WORKSPACE                 string = "D:/WORKSPACE"
+	WORKSPACE_AVAILABLE_SPACE uint64 = 32 * 1024 * 1024 * 1024 // 32 GB
+	WORKSPACE_CAN_INITIALIZE  bool   = true
 
-	SERVER_PORT = ":3000"
+	SERVER_PORT string = ":3000"
 
-	DEFAULT_SIGNUP_ROLE_NAME = "member"
+	DEFAULT_SIGNUP_ROLE_NAME string = "member"
 )
 
 var (
-	User_Limit = 5
+	User_Limit uint = 5
 )
 
 func GenerateToken(len int) (string, time.Time) {

@@ -28,7 +28,7 @@ func signup(c *gin.Context) {
 	err := c.ShouldBindWith(&form, binding.FormPost)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"error":        CONTROLLER_LOGOUT_ERROR_BIND,
+			"error":        CONTROLLER_SIGNUP_ERROR_BIND,
 			"isSignupFail": true,
 		})
 		return

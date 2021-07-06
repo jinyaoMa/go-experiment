@@ -14,7 +14,7 @@
             type="number"
             min="1"
             step="1"
-            v-model="userLimit"
+            v-model="options.userLimit"
             autocomplete="off"
             @keyup.enter="handleSubmit"
           />
@@ -31,13 +31,18 @@
 
 <script>
 export default {
+  props: {
+    options: {
+      type: Object,
+      default() {
+        return {
+          userLimit: 1,
+        };
+      },
+    },
+  },
   methods: {
     handleSubmit() {},
-  },
-  data() {
-    return {
-      userLimit: 1,
-    };
   },
 };
 </script>

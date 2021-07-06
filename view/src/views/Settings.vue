@@ -2,7 +2,7 @@
   <div class="settings">
     <Head isSettings />
     <div class="main">
-      <Basic />
+      <Basic :options="options" />
       <div class="divider" />
       <RoleManagement />
       <div class="divider" />
@@ -23,6 +23,32 @@ export default {
     Basic,
     RoleManagement,
     ResetPassword,
+  },
+  data() {
+    return {
+      options: {},
+    };
+  },
+  mounted() {
+    console.log(this);
+    this.$startLoading();
+    this.$http
+      .post("/api/admin/settings", {
+        id: this.$user.id,
+        token: this.$user.token,
+      })
+      .then((res) => {
+        if (res.data.success) {
+          this.options = res.data.data;
+        } else {
+          this.$router.push("/login");
+        }
+        this.$stopLoading();
+      })
+      .catch((err) => {
+        this.$router.push("/login");
+        this.$stopLoading();
+      });
   },
 };
 </script>
