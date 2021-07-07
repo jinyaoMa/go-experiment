@@ -99,6 +99,18 @@ Vue.mixin({
           return space;
       }
     },
+    $revertSpaceByUnit(space, unit) {
+      switch (unit) {
+        case "KB":
+          return space * KB;
+        case "MB":
+          return space * MB;
+        case "GB":
+          return space * GB;
+        default:
+          return space;
+      }
+    },
     $convertSpace2String(space) {
       const unit = this.$getUnitBySpace(space);
       return `${this.$convertSpaceByUnit(space, unit)} ${unit}`;

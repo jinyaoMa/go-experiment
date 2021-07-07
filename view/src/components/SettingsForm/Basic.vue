@@ -15,7 +15,6 @@
             min="1"
             step="1"
             v-model="options.userLimit"
-            autocomplete="off"
             @keyup.enter="handleSubmit"
           />
         </div>
@@ -42,7 +41,26 @@ export default {
     },
   },
   methods: {
-    handleSubmit() {},
+    handleSubmit() {
+      this.$startLoading();
+      this.$http
+        .post("/api/admin/basic", {
+          id: this.$user.id,
+          token: this.$user.token,
+          userLimit: this.options.userLimit,
+        })
+        .then((res) => {
+          if (res.data.success) {
+          } else {
+            this.$router.push("/login");
+          }
+          this.$stopLoading();
+        })
+        .catch((err) => {
+          this.$router.push("/login");
+          this.$stopLoading();
+        });
+    },
   },
 };
 </script>

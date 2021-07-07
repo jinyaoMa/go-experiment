@@ -16,7 +16,7 @@ const (
 )
 
 var (
-	User_Limit uint = 5
+	User_Limit int64 = 5
 )
 
 func GenerateToken(len int) (string, time.Time) {

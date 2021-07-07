@@ -12,7 +12,7 @@
           <input
             id="oldPassword"
             type="password"
-            :placeholder="$locale.settings.resetPassword.oldPasswordPlacholder"
+            :placeholder="$locale.settings.resetPassword.oldPasswordPlaceholder"
             v-model="oldPassword"
             @keyup.enter="handleSubmit"
           />
@@ -29,7 +29,7 @@
           <input
             id="newPassword"
             type="password"
-            :placeholder="$locale.settings.resetPassword.newPasswordPlacholder"
+            :placeholder="$locale.settings.resetPassword.newPasswordPlaceholder"
             v-model="newPassword"
             @keyup.enter="handleSubmit"
           />
@@ -40,14 +40,14 @@
       </div>
       <div class="form-item">
         <label for="confirmNewPassword">
-          {{ $locale.settings.resetPassword.newPassword }}
+          {{ $locale.settings.resetPassword.confirmNewPassword }}
         </label>
         <div class="custom-input">
           <input
             id="confirmNewPassword"
             type="password"
             :placeholder="
-              $locale.settings.resetPassword.confirmNewPasswordPlacholder
+              $locale.settings.resetPassword.confirmNewPasswordPlaceholder
             "
             v-model="confirmNewPassword"
             @keyup.enter="handleSubmit"
@@ -69,7 +69,33 @@
 <script>
 export default {
   methods: {
-    handleSubmit() {},
+    clearForm() {
+      this.oldPassword = "";
+      this.newPassword = "";
+      this.confirmNewPassword = "";
+    },
+    handleSubmit() {
+      this.$startLoading();
+      this.$http
+        .post("/api/admin/resetPassword", {
+          id: this.$user.id,
+          token: this.$user.token,
+          oldPassword: this.oldPassword,
+          newPassword: this.newPassword,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.clearForm();
+          } else {
+            this.$router.push("/login");
+          }
+          this.$stopLoading();
+        })
+        .catch((err) => {
+          this.$router.push("/login");
+          this.$stopLoading();
+        });
+    },
   },
   data() {
     return {

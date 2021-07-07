@@ -79,7 +79,10 @@ export default {
       submit: "Submit"
     },
     roleManagement: {
-      title: "Role Management"
+      title: "Role Management",
+      name: "Role Name",
+      permission: "Permission",
+      space: "Space"
     }
   }
 };

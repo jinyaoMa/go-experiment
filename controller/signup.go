@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	CONTROLLER_SIGNUP_ERROR_USER_LIMIT    = "Registration Closed"
 	CONTROLLER_SIGNUP_ERROR_BIND          = "binding error"
 	CONTROLLER_SIGNUP_ERROR_ACCOUNT_EXIST = "account exist"
 )
@@ -24,6 +25,15 @@ type SignupForm struct {
 }
 
 func signup(c *gin.Context) {
+	var userCount int64
+	model.GetDB().Model(&model.User{}).Count(&userCount)
+	if userCount >= config.User_Limit {
+		c.JSON(http.StatusOK, gin.H{
+			"fail": CONTROLLER_SIGNUP_ERROR_USER_LIMIT,
+		})
+		return
+	}
+
 	var form SignupForm
 	err := c.ShouldBindWith(&form, binding.FormPost)
 	if err != nil {

@@ -4,7 +4,7 @@
     <div class="main">
       <Basic :options="options" />
       <div class="divider" />
-      <RoleManagement />
+      <RoleManagement :options="options" />
       <div class="divider" />
       <ResetPassword />
     </div>
@@ -39,7 +39,15 @@ export default {
       })
       .then((res) => {
         if (res.data.success) {
-          this.options = res.data.data;
+          let data = res.data.data;
+          data.roles.forEach((role) => {
+            role.unit = this.$getUnitBySpace(role.Space);
+            role.convertedSpace = this.$convertSpaceByUnit(
+              role.Space,
+              role.unit
+            );
+          });
+          this.options = data;
         } else {
           this.$router.push("/login");
         }

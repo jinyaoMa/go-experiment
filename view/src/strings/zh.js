@@ -79,7 +79,10 @@ export default {
       submit: "提交设置"
     },
     roleManagement: {
-      title: "角色管理"
+      title: "角色管理",
+      name: "角色名",
+      permission: "权限",
+      space: "储存空间"
     }
   }
 };
