@@ -4,7 +4,9 @@ import (
 	"jinyaoma/go-experiment/config"
 	"jinyaoma/go-experiment/model"
 	"net/http"
+	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -31,48 +33,39 @@ func download(c *gin.Context) {
 	}
 
 	var file model.File
-	resultFile := model.GetDB().Where("id = ? AND files.share_code = ?", query.FileId, query.ShareCode).First(&file)
+	resultFile := model.GetDB().Where("id = ? AND files.share_code = ? AND files.type = ?", query.FileId, query.ShareCode, model.FILE_TYPE_FILE).First(&file)
 	if resultFile.Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
 
+	var path string
 	if file.ShareExpiredAt.After(time.Now()) {
-		c.JSON(200, gin.H{
-			"path": filepath.Join(config.WORKSPACE, query.UserAccount, file.Path),
-		})
-		return
+		if strings.ContainsAny(query.UserAccount, "\\/:*?\"<>|") {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		path = filepath.Join(config.WORKSPACE, query.UserAccount, file.Path)
+	} else {
+		var user model.User
+		resultUser := model.GetDB().Where("id = ? AND SUBSTR(users.token, ?) = ?", file.UserID, query.IndexPointToToken, query.RelativeTokenAfterIndex).First(&user)
+		if resultUser.Error != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		path = filepath.Join(config.WORKSPACE, user.Account, file.Path)
 	}
 
-	var user model.User
-	resultUser := model.GetDB().Where("id = ? AND SUBSTR(users.token, ?) = ?", file.UserID, query.IndexPointToToken, query.RelativeTokenAfterIndex).First(&user)
-	if resultUser.Error != nil {
+	_, errOpenFile := os.Open(path)
+	if errOpenFile != nil {
+		model.GetDB().Delete(&file)
 		c.Status(http.StatusNotFound)
 		return
 	}
-
-	c.JSON(200, gin.H{
-		"path": filepath.Join(config.WORKSPACE, user.Account, file.Path),
-	})
-
-	/*
-		//打开文件
-		_, err := os.Open(fileDir + "/" + fileName)
-		//非空处理
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{
-			    "success": false,
-			    "message": "失败",
-			    "error":   "资源不存在",
-			})
-			c.Redirect(http.StatusFound, "/404")
-			return
-		}
-		c.Header("Content-Type", "application/octet-stream")
-		c.Header("Content-Disposition", "attachment; filename="+fileName)
-		c.Header("Content-Transfer-Encoding", "binary")
-		c.File(fileDir + "/" + fileName)
-	*/
+	c.Header("Content-Type", "application/octet-stream")
+	c.Header("Content-Disposition", "attachment; filename="+filepath.Base(path))
+	c.Header("Content-Transfer-Encoding", "binary")
+	c.File(path)
 }
 
 func InitService(rg *gin.RouterGroup) {
