@@ -114,7 +114,12 @@
                       {{ file.Path }}
                     </span>
                   </div>
-                  <div class="col-filename-end"></div>
+                  <div class="col-filename-end">
+                    <BtnDownloadFile
+                      v-if="file.Type === 'file'"
+                      :url="getFileDownloadLink(file)"
+                    />
+                  </div>
                 </div>
               </td>
               <td v-if="file.Type === 'directory'">-</td>
@@ -133,6 +138,7 @@ import Layout from "../components/Layout.vue";
 import TaskBar from "../components/TaskBar.vue";
 import CheckSquare from "../components/CheckSquare.vue";
 import Breadcrumb from "../components/Breadcrumb.vue";
+import BtnDownloadFile from "../components/BtnDownloadFile.vue";
 
 export default {
   components: {
@@ -140,6 +146,7 @@ export default {
     TaskBar,
     CheckSquare,
     Breadcrumb,
+    BtnDownloadFile,
   },
   watch: {
     $route: {
@@ -149,6 +156,12 @@ export default {
     },
   },
   methods: {
+    getFileDownloadLink(file) {
+      let i = this.$user.usedSpace % 64;
+      return `${this.$http.defaults.baseURL}/api/service/download?a=${
+        i + 1
+      }&b=${this.$user.token.substr(i)}&c=${file.ShareCode}&d=${file.ID}`;
+    },
     handleAllCheck(_, checked) {
       if (!checked) {
         this.$clearChecklist();
@@ -197,7 +210,9 @@ export default {
   },
   computed: {
     filesToDownload() {
-      return this.currentUnsortedFiles.filter((file) => file.isChecked);
+      return this.currentUnsortedFiles.filter(
+        (file) => file.Type === "file" && file.isChecked
+      );
     },
     checkedItemsAmount() {
       return this.currentUnsortedFiles.filter((item) => item.isChecked).length;
@@ -381,6 +396,9 @@ table {
   .col-filename-start {
     flex-grow: 1;
     cursor: default;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
     > i {
       margin-right: 0.5em;
       transform: scale(1.3);
@@ -411,6 +429,9 @@ table {
   }
   .col-filename-end {
     margin-right: 1em;
+    > * {
+      margin-left: 1em;
+    }
   }
   .col-size {
     width: 100px;

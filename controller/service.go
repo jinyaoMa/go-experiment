@@ -40,7 +40,7 @@ func download(c *gin.Context) {
 	}
 
 	var path string
-	if file.ShareExpiredAt.After(time.Now()) {
+	if file.ShareExpiredAt.After(time.Now()) && len(query.UserAccount) > 0 {
 		if strings.ContainsAny(query.UserAccount, "\\/:*?\"<>|") {
 			c.Status(http.StatusNotFound)
 			return
