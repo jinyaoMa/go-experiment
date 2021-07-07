@@ -61,6 +61,8 @@ Vue.mixin({
   computed: {
     ...Vuex.mapGetters({
       $loading: "loading",
+      $hasError: "hasError",
+      $errorMsg: "errorMsg",
       $locale: "locale",
       $user: "user",
       $files: "files"
@@ -70,6 +72,8 @@ Vue.mixin({
     ...Vuex.mapActions({
       $startLoading: "startLoading",
       $stopLoading: "stopLoading",
+      $showError: "showError",
+      $hideError: "hideError",
       $swapLang: "swapLang",
       $setUser: "setUser",
       $setFiles: "setFiles",
@@ -124,6 +128,8 @@ Vue.mixin({
 export default new Vuex.Store({
   state: {
     loading: true,
+    hasError: false,
+    errorMsg: "",
     lang: isChinese() ? langZH : langEN,
     ...loadLang(),
     user: {
@@ -141,6 +147,12 @@ export default new Vuex.Store({
   getters: {
     loading(state) {
       return state.loading;
+    },
+    hasError(state) {
+      return state.hasError;
+    },
+    errorMsg(state) {
+      return state.errorMsg;
     },
     locale(state) {
       switch (state.lang) {
@@ -164,6 +176,13 @@ export default new Vuex.Store({
     },
     stopLoading(state) {
       state.loading = false;
+    },
+    showError(state, text) {
+      state.errorMsg = text;
+      state.hasError = true;
+    },
+    hideError(state) {
+      state.hasError = false;
     },
     swapLang(state) {
       switch (state.lang) {
@@ -206,6 +225,12 @@ export default new Vuex.Store({
     },
     stopLoading(context) {
       context.commit("stopLoading");
+    },
+    showError(context, text) {
+      context.commit("showError", text);
+    },
+    hideError(context) {
+      context.commit("hideError");
     },
     swapLang(context) {
       context.commit("swapLang");

@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	CONTROLLER_SIGNUP_ERROR_USER_LIMIT    = "Registration Closed"
-	CONTROLLER_SIGNUP_ERROR_BIND          = "binding error"
-	CONTROLLER_SIGNUP_ERROR_ACCOUNT_EXIST = "account exist"
+	CONTROLLER_SIGNUP_ERROR_USER_LIMIT = "Registration Closed"
+	CONTROLLER_SIGNUP_ERROR_BIND       = "binding error"
+	CONTROLLER_SIGNUP_ERROR_ACCOUNT    = "account error"
 )
 
 type SignupForm struct {
@@ -73,7 +73,7 @@ func signup(c *gin.Context) {
 	})
 	if errNewWorkspace != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"fail": CONTROLLER_SIGNUP_ERROR_ACCOUNT_EXIST,
+			"fail": CONTROLLER_SIGNUP_ERROR_ACCOUNT,
 		})
 		return
 	}

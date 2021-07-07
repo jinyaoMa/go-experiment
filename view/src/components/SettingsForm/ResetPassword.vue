@@ -75,6 +75,10 @@ export default {
       this.confirmNewPassword = "";
     },
     handleSubmit() {
+      if (this.newPassword != this.confirmNewPassword) {
+        this.$showError(this.$locale.common.errorConfirmPassword);
+        return;
+      }
       this.$startLoading();
       this.$http
         .post("/api/admin/resetPassword", {
@@ -87,12 +91,12 @@ export default {
           if (res.data.success) {
             this.clearForm();
           } else {
-            this.$router.push("/login");
+            this.$showError(this.$locale.common.errorMsg);
           }
           this.$stopLoading();
         })
         .catch((err) => {
-          this.$router.push("/login");
+          this.$showError(this.$locale.common.errorServer);
           this.$stopLoading();
         });
     },

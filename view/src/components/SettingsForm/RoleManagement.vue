@@ -115,12 +115,12 @@ export default {
             this.options.roles = data.roles;
             this.clearAdd();
           } else {
-            this.$router.push("/login");
+            this.$showError(this.$locale.common.errorMsg);
           }
           this.$stopLoading();
         })
         .catch((err) => {
-          this.$router.push("/login");
+          this.$showError(this.$locale.common.errorServer);
           this.$stopLoading();
         });
     },
@@ -147,12 +147,12 @@ export default {
             });
             this.options.roles = data.roles;
           } else {
-            this.$router.push("/login");
+            this.$showError(this.$locale.common.errorMsg);
           }
           this.$stopLoading();
         })
         .catch((err) => {
-          this.$router.push("/login");
+          this.$showError(this.$locale.common.errorServer);
           this.$stopLoading();
         });
     },

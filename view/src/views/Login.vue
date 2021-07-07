@@ -87,10 +87,12 @@ export default {
             this.$router.push("/");
             this.$stopLoading();
           } else {
+            this.$showError(this.$locale.common.errorMsg);
             this.$stopLoading();
           }
         })
         .catch((err) => {
+          this.$showError(this.$locale.common.errorServer);
           this.$stopLoading();
         });
     },

@@ -100,6 +100,10 @@ export default {
   },
   methods: {
     handleSignup() {
+      if (this.password != this.confirmPassword) {
+        this.$showError(this.$locale.common.errorConfirmPassword);
+        return;
+      }
       this.$startLoading();
       this.$http
         .post("/api/signup", {
@@ -122,10 +126,12 @@ export default {
             this.$router.push("/");
             this.$stopLoading();
           } else {
+            this.$showError(this.$locale.common.errorMsg);
             this.$stopLoading();
           }
         })
         .catch((err) => {
+          this.$showError(this.$locale.common.errorServer);
           this.$stopLoading();
         });
     },

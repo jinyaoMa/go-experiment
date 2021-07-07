@@ -19,6 +19,11 @@ export default {
     download: "Download",
     newFolder: "New Folder",
     searchPlaceholder: "Search",
+    error: "ERROR",
+    errorMsg: "Error! Error! Error!",
+    errorConfirmPassword: "Please check and confirm your password again!",
+    errorServer: "Server Error! Error! Error!",
+    confirm: "OK",
     loaded: {
       one: "Total ? item loaded",
       more: "Total ? items loaded"
@@ -75,6 +80,8 @@ export default {
     },
     basic: {
       title: "Basic Settings",
+      username: "Username",
+      usernamePlaceholder: "change your username",
       userLimit: "Limit of total registered users",
       submit: "Submit"
     },

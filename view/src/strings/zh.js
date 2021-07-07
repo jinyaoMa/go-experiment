@@ -19,6 +19,11 @@ export default {
     download: "下载",
     newFolder: "新建文件夹",
     searchPlaceholder: "搜索",
+    error: "错误",
+    errorMsg: "错哪了自己找找，你已经是一个成熟的用户了 (๑•̀ㅂ•́)و✧",
+    errorConfirmPassword: "再确认一下密码看看 (￣_,￣ )",
+    errorServer: "你的好友“服务器”已下线",
+    confirm: "好吧",
     loaded: {
       one: "已全部加载，共 ? 项",
       more: "已全部加载，共 ? 项"
@@ -75,6 +80,8 @@ export default {
     },
     basic: {
       title: "基础设置",
+      username: "用户名",
+      usernamePlaceholder: "改个喜翻的新名吧 |д･)っ",
       userLimit: "用户注册总数量限制",
       submit: "提交设置"
     },

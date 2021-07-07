@@ -3,7 +3,7 @@
     <Head isSettings />
     <div class="main">
       <Basic :options="options" />
-      <div class="divider" />
+      <div v-if="$user.permission.includes('ADMIN:1')" class="divider" />
       <RoleManagement
         v-if="$user.permission.includes('ADMIN:1')"
         :options="options"

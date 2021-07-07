@@ -4,6 +4,23 @@
       {{ $locale.settings.basic.title }}
     </div>
     <div class="form">
+      <div class="form-item">
+        <label for="username">
+          {{ $locale.settings.basic.username }}
+        </label>
+        <div class="custom-input">
+          <input
+            id="username"
+            type="text"
+            :placeholder="$locale.settings.basic.usernamePlaceholder"
+            v-model="options.username"
+            @keyup.enter="handleSubmit"
+          />
+          <div v-if="options.username" class="clean-input">
+            <i class="fas fa-times" @click="options.username = ''"></i>
+          </div>
+        </div>
+      </div>
       <div v-if="$user.permission.includes('ADMIN:1')" class="form-item">
         <label for="userLimit">
           {{ $locale.settings.basic.userLimit }}
@@ -35,6 +52,7 @@ export default {
       type: Object,
       default() {
         return {
+          username: "",
           userLimit: 1,
         };
       },
@@ -42,22 +60,27 @@ export default {
   },
   methods: {
     handleSubmit() {
+      const name = this.options.username;
       this.$startLoading();
       this.$http
         .post("/api/admin/basic", {
           id: this.$user.id,
           token: this.$user.token,
           userLimit: this.options.userLimit,
+          username: name,
         })
         .then((res) => {
           if (res.data.success) {
+            this.$setUser({
+              name,
+            });
           } else {
-            this.$router.push("/login");
+            this.$showError(this.$locale.common.errorMsg);
           }
           this.$stopLoading();
         })
         .catch((err) => {
-          this.$router.push("/login");
+          this.$showError(this.$locale.common.errorServer);
           this.$stopLoading();
         });
     },

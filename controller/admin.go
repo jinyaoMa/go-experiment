@@ -50,6 +50,7 @@ func GetIsAdmin(c *gin.Context) bool {
 }
 
 func settings(c *gin.Context) {
+	user := GetAuthUser(c)
 	isAdmin := GetIsAdmin(c)
 	if isAdmin {
 		var roles []model.Role
@@ -74,6 +75,7 @@ func settings(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data": gin.H{
+			"username":  user.Name,
 			"userLimit": 0,
 			"roles":     make([]model.Role, 0),
 		},

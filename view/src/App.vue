@@ -2,18 +2,21 @@
   <div id="app">
     <router-view
       :class="{
-        'loading-covered': $loading,
+        covered: $loading || $hasError,
       }"
     />
     <Loading v-if="$loading" />
+    <Error v-if="$hasError" />
   </div>
 </template>
 
 <script>
 import Loading from "./components/Loading.vue";
+import Error from "./components/Error.vue";
 export default {
   components: {
     Loading,
+    Error,
   },
   mounted() {
     console.log(this);
@@ -37,7 +40,7 @@ body {
   font-size: 16px;
   line-height: 1.3;
 }
-.loading-covered {
+.covered {
   filter: opacity(0.3);
   pointer-events: none;
 }
