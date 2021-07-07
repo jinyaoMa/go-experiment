@@ -202,6 +202,7 @@ export default new Vuex.Store({
     setFiles(state, files) {
       for (let i = 0; i < files.length; i++) {
         files[i].isChecked = false; // add for checklist
+        files[i].canRename = false; // add for rename
       }
       state.files = files;
     },

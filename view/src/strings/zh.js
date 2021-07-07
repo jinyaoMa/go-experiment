@@ -17,6 +17,7 @@ export default {
     recycle: "回收站",
     upload: "上传",
     download: "下载",
+    rename: "重命名",
     newFolder: "新建文件夹",
     searchPlaceholder: "搜索",
     error: "错误",

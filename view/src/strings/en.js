@@ -17,6 +17,7 @@ export default {
     recycle: "Recycle Bin",
     upload: "Upload",
     download: "Download",
+    rename: "Rename",
     newFolder: "New Folder",
     searchPlaceholder: "Search",
     error: "ERROR",

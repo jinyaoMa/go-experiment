@@ -1,5 +1,10 @@
 <template>
-  <a class="btn-download-file" :href="url" download="file">
+  <a
+    class="btn-download-file"
+    :href="url"
+    download="file"
+    :title="$locale.common.download"
+  >
     <i class="fas fa-download fa-fw" />
   </a>
 </template>

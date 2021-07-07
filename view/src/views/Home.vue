@@ -92,33 +92,63 @@
               </td>
               <td>
                 <div class="col-filename">
-                  <router-link
+                  <div
                     v-if="file.Type === 'directory'"
                     class="col-filename-start"
-                    :to="{
-                      query: {
-                        currentPath: file.Path,
-                      },
-                    }"
                   >
-                    <i class="fas fa-folder fa-fw" />
-                    {{ file.Name }}
-                    <span class="hint" v-if="searchKeyword">
-                      {{ file.Path }}
-                    </span>
-                  </router-link>
+                    <div v-if="file.canRename" class="form-rename">
+                      <input type="text" v-model="renameFileName" />
+                      <i
+                        class="fas fa-check fa-fw"
+                        @click="handleRenameFile(file)"
+                      />
+                      <i
+                        class="fas fa-times fa-fw"
+                        @click="file.canRename = false"
+                      />
+                    </div>
+                    <div v-else>
+                      <router-link
+                        :to="{
+                          query: {
+                            currentPath: file.Path,
+                          },
+                        }"
+                      >
+                        <i class="fas fa-folder fa-fw" />
+                        {{ file.Name }}
+                        <span class="hint" v-if="searchKeyword">
+                          {{ file.Path }}
+                        </span>
+                      </router-link>
+                    </div>
+                  </div>
                   <div v-else class="col-filename-start">
-                    <i class="fas fa-file fa-fw" />
-                    {{ file.Name }}
-                    <span class="hint" v-if="searchKeyword">
-                      {{ file.Path }}
-                    </span>
+                    <div v-if="file.canRename" class="form-rename">
+                      <input type="text" v-model="renameFileName" />
+                      <i
+                        class="fas fa-check fa-fw"
+                        @click="handleRenameFile(file)"
+                      />
+                      <i
+                        class="fas fa-times fa-fw"
+                        @click="file.canRename = false"
+                      />
+                    </div>
+                    <div v-else>
+                      <i class="fas fa-file fa-fw" />
+                      {{ file.Name }}
+                      <span class="hint" v-if="searchKeyword">
+                        {{ file.Path }}
+                      </span>
+                    </div>
                   </div>
                   <div class="col-filename-end">
                     <BtnDownloadFile
                       v-if="file.Type === 'file'"
                       :url="getFileDownloadLink(file)"
                     />
+                    <BtnRename @click="handleRenameClick(file)" />
                   </div>
                 </div>
               </td>
@@ -139,6 +169,7 @@ import TaskBar from "../components/TaskBar.vue";
 import CheckSquare from "../components/CheckSquare.vue";
 import Breadcrumb from "../components/Breadcrumb.vue";
 import BtnDownloadFile from "../components/BtnDownloadFile.vue";
+import BtnRename from "../components/BtnRename.vue";
 
 export default {
   components: {
@@ -147,6 +178,7 @@ export default {
     CheckSquare,
     Breadcrumb,
     BtnDownloadFile,
+    BtnRename,
   },
   watch: {
     $route: {
@@ -156,6 +188,39 @@ export default {
     },
   },
   methods: {
+    handleRenameFile(file) {
+      this.$startLoading();
+      this.$http
+        .post("/api/files/renameFile", {
+          id: this.$user.id,
+          token: this.$user.token,
+          fileId: this.renameFileId,
+          filename: this.renameFileName,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            file.Name = this.renameFileName;
+            file.canRename = false;
+            this.renameFileId = 0;
+            this.renameFileName = "";
+          } else {
+            this.$showError(this.$locale.common.errorMsg);
+          }
+          this.$stopLoading();
+        })
+        .catch((err) => {
+          this.$showError(this.$locale.common.errorServer);
+          this.$stopLoading();
+        });
+    },
+    handleRenameClick(file) {
+      this.currentFiles.forEach((f) => {
+        f.canRename = false;
+      });
+      file.canRename = true;
+      this.renameFileId = file.ID;
+      this.renameFileName = file.Name;
+    },
     getFileDownloadLink(file) {
       let i = this.$user.usedSpace % 64;
       return `${this.$http.defaults.baseURL}/api/service/download?a=${
@@ -312,6 +377,8 @@ export default {
       searchKeyword: "",
       sortBy: "UpdatedAt",
       sortOrder: "DESC",
+      renameFileId: 0,
+      renameFileName: "",
     };
   },
   mounted() {
@@ -409,6 +476,18 @@ table {
       font-size: 0.8em;
       margin-left: 0.5em;
     }
+    a,
+    span {
+      color: #333333;
+      text-decoration: none;
+      &.back {
+        color: #aaabac;
+        user-select: none;
+      }
+      &:hover {
+        color: #2196f3;
+      }
+    }
   }
   a,
   span {
@@ -441,6 +520,20 @@ table {
   }
   input[type="checkbox"] {
     margin: 0;
+  }
+}
+.form-rename {
+  > input {
+    margin-right: 0.5em;
+  }
+  > i {
+    color: #2196f3;
+  }
+  .fa-check:hover {
+    color: #4caf50;
+  }
+  .fa-times:hover {
+    color: #dd3333;
   }
 }
 </style>
