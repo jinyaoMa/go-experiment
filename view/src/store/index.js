@@ -130,6 +130,7 @@ export default new Vuex.Store({
       id: 0,
       name: "",
       role: "",
+      permission: "",
       usedSpace: 0,
       allSpace: 0,
       token: ""

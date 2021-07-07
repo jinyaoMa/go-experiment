@@ -114,6 +114,7 @@ export default {
               id: data.userid,
               name: data.username,
               role: data.role,
+              permission: data.permission,
               usedSpace: data.usedSpace,
               allSpace: data.allSpace,
               token: data.token,

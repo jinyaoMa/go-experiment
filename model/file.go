@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -30,8 +31,9 @@ type File struct {
 }
 
 func (file *File) BeforeCreate(tx *gorm.DB) error {
+	fmt.Println(file.UserID)
 	var repeatedFile File
-	result := tx.First(&repeatedFile, "path = ?", file.Path)
+	result := tx.First(&repeatedFile, "path = ? AND user_id = ?", file.Path, file.UserID)
 	if result.RowsAffected == 1 {
 		return errors.New(FILE_ERROR_IGNORE_REPEAT)
 	}

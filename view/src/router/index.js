@@ -57,12 +57,17 @@ const router = new VueRouter({
 
 const isLogin = (o) => {
   const data = loadUser();
-  return (
-    typeof data.user.id === "number" &&
-    data.user.id > 0 &&
-    typeof data.user.token === "string" &&
-    data.user.token.length === 128
-  );
+  if (data) {
+    return (
+      typeof data.user.id === "number" &&
+      data.user.id > 0 &&
+      typeof data.user.token === "string" &&
+      data.user.token.length === 128 &&
+      typeof data.user.permission === "string" &&
+      data.user.permission.includes("CORE:1")
+    );
+  }
+  return false;
 };
 
 router.beforeEach((to, from, next) => {

@@ -4,7 +4,10 @@
     <div class="main">
       <Basic :options="options" />
       <div class="divider" />
-      <RoleManagement :options="options" />
+      <RoleManagement
+        v-if="$user.permission.includes('ADMIN:1')"
+        :options="options"
+      />
       <div class="divider" />
       <ResetPassword />
     </div>

@@ -61,12 +61,14 @@ func signup(c *gin.Context) {
 		} else {
 			typ = model.FILE_TYPE_FILE
 		}
+		shareCode := config.GenerateShareCode(4)
 		userFiles = append(userFiles, model.File{
 			Name:      filepath.Base(path),
 			Path:      path,
 			Type:      typ,
 			Extension: filepath.Ext(path),
 			Size:      uint64(fileInfo.Size()),
+			ShareCode: shareCode,
 		})
 	})
 	if errNewWorkspace != nil {
@@ -108,13 +110,14 @@ func signup(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data": gin.H{
-			"userid":    newUser.ID,
-			"username":  newUser.Name,
-			"role":      role.Name,
-			"token":     newUser.Token,
-			"usedSpace": 0,
-			"allSpace":  allSpace,
-			"files":     newUser.Files,
+			"userid":     newUser.ID,
+			"username":   newUser.Name,
+			"role":       role.Name,
+			"permission": role.Permission,
+			"token":      newUser.Token,
+			"usedSpace":  0,
+			"allSpace":   allSpace,
+			"files":      newUser.Files,
 		},
 	})
 }

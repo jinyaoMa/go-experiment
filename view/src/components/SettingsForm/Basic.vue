@@ -4,7 +4,7 @@
       {{ $locale.settings.basic.title }}
     </div>
     <div class="form">
-      <div class="form-item">
+      <div v-if="$user.permission.includes('ADMIN:1')" class="form-item">
         <label for="userLimit">
           {{ $locale.settings.basic.userLimit }}
         </label>

@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	CONTROLLER_ADMIN_ERROR_BIND     = "binding error"
-	CONTROLLER_ADMIN_ERROR_PASSWORD = "password unmatched"
+	CONTROLLER_ADMIN_ERROR_BIND         = "binding error"
+	CONTROLLER_ADMIN_ERROR_PASSWORD     = "password unmatched"
+	CONTROLLER_ADMIN_ERROR_UNAUTHORIZED = "unauthorized user"
 )
 
 func Admin() gin.HandlerFunc {
@@ -49,11 +50,23 @@ func GetIsAdmin(c *gin.Context) bool {
 }
 
 func settings(c *gin.Context) {
-	var roles []model.Role
-	resultRoles := model.GetDB().Order("id desc").Find(&roles)
-	if resultRoles.Error != nil {
+	isAdmin := GetIsAdmin(c)
+	if isAdmin {
+		var roles []model.Role
+		resultRoles := model.GetDB().Order("id desc").Find(&roles)
+		if resultRoles.Error != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"error": http.StatusInternalServerError,
+			})
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{
-			"error": http.StatusInternalServerError,
+			"success": true,
+			"data": gin.H{
+				"userLimit": config.User_Limit,
+				"roles":     roles,
+			},
 		})
 		return
 	}
@@ -61,29 +74,68 @@ func settings(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data": gin.H{
-			"userLimit": config.User_Limit,
-			"roles":     roles,
+			"userLimit": 0,
+			"roles":     make([]model.Role, 0),
 		},
 	})
 }
 
-type BasicForm struct {
+type BasicUserForm struct {
+	Username string `form:"username" binding:"required"`
+}
+
+type BasicAdminForm struct {
+	BasicUserForm
 	UserLimit int64 `form:"userLimit" binding:"required"`
 }
 
 func basic(c *gin.Context) {
-	var form BasicForm
-	err := c.ShouldBindWith(&form, binding.FormPost)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error":  CONTROLLER_ADMIN_ERROR_BIND,
-			"isFail": true,
-		})
-		return
-	}
+	user := GetAuthUser(c)
+	isAdmin := GetIsAdmin(c)
+	if isAdmin {
+		var form BasicAdminForm
+		err := c.ShouldBindWith(&form, binding.FormPost)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"error":  CONTROLLER_ADMIN_ERROR_BIND,
+				"isFail": true,
+			})
+			return
+		}
 
-	config.User_Limit = form.UserLimit
-	log.Printf("[CONFIG] User_Limit SET TO %d\n", config.User_Limit)
+		config.User_Limit = form.UserLimit
+		log.Printf("[CONFIG] User_Limit SET TO %d\n", config.User_Limit)
+
+		resultUpdateUsername := model.GetDB().Model(&user).Updates(model.User{
+			Name: form.Username,
+		})
+		if resultUpdateUsername.RowsAffected != 1 {
+			c.JSON(http.StatusOK, gin.H{
+				"error": http.StatusInternalServerError,
+			})
+			return
+		}
+	} else {
+		var form BasicUserForm
+		err := c.ShouldBindWith(&form, binding.FormPost)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"error":  CONTROLLER_ADMIN_ERROR_BIND,
+				"isFail": true,
+			})
+			return
+		}
+
+		resultUpdateUsername := model.GetDB().Model(&user).Updates(model.User{
+			Name: form.Username,
+		})
+		if resultUpdateUsername.RowsAffected != 1 {
+			c.JSON(http.StatusOK, gin.H{
+				"error": http.StatusInternalServerError,
+			})
+			return
+		}
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
@@ -137,6 +189,14 @@ type AddRoleForm struct {
 }
 
 func addRole(c *gin.Context) {
+	isAdmin := GetIsAdmin(c)
+	if !isAdmin {
+		c.JSON(http.StatusOK, gin.H{
+			"fail": CONTROLLER_ADMIN_ERROR_UNAUTHORIZED,
+		})
+		return
+	}
+
 	var form AddRoleForm
 	err := c.ShouldBindWith(&form, binding.FormPost)
 	if err != nil {
@@ -185,6 +245,14 @@ type SaveRoleForm struct {
 }
 
 func saveRole(c *gin.Context) {
+	isAdmin := GetIsAdmin(c)
+	if !isAdmin {
+		c.JSON(http.StatusOK, gin.H{
+			"fail": CONTROLLER_ADMIN_ERROR_UNAUTHORIZED,
+		})
+		return
+	}
+
 	var form SaveRoleForm
 	err := c.ShouldBindWith(&form, binding.FormPost)
 	if err != nil {
