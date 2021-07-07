@@ -2,8 +2,9 @@ package model
 
 import (
 	"errors"
-	"fmt"
+	"jinyaoma/go-experiment/config"
 	"jinyaoma/go-experiment/workspace"
+	"log"
 	"os"
 
 	"path/filepath"
@@ -43,16 +44,18 @@ func initUserAdmin(db *gorm.DB) User {
 				} else {
 					typ = FILE_TYPE_FILE
 				}
+				shareCode := config.GenerateShareCode(4)
 				userFiles = append(userFiles, File{
 					Name:      filepath.Base(path),
 					Path:      path,
 					Type:      typ,
 					Extension: filepath.Ext(path),
 					Size:      uint64(fileInfo.Size()),
+					ShareCode: shareCode,
 				})
 			})
 			if err != nil {
-				fmt.Println("User admin workspace error")
+				log.Println("User admin workspace error")
 			} else {
 				if db.Create(&User{
 					Name:     "Admin",
@@ -61,7 +64,7 @@ func initUserAdmin(db *gorm.DB) User {
 					RoleID:   role.ID,
 					Files:    userFiles,
 				}).Error == nil {
-					fmt.Println("User admin initialized")
+					log.Println("User admin initialized")
 				}
 			}
 		}

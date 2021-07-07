@@ -24,8 +24,8 @@ type File struct {
 	Extension      string
 	Size           uint64
 	Recycled       uint `gorm:"check:recycled IN (0, 1);default:0"`
-	ShareCode      *string
-	ShareExpiredAt *time.Time
+	ShareCode      string
+	ShareExpiredAt time.Time
 	UserID         uint
 }
 

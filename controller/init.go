@@ -94,6 +94,7 @@ func RunRouter() {
 		InitSignup(api)
 		InitFiles(api)
 		InitAdmin(api)
+		InitService(api)
 	}
 
 	router.Run(config.SERVER_PORT)

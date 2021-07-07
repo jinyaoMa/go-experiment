@@ -2,7 +2,7 @@ package model
 
 import (
 	"errors"
-	"fmt"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -41,7 +41,7 @@ func initDefaultRoles(db *gorm.DB) {
 	}
 
 	if db.Create(&roles).Error == nil {
-		fmt.Println("Default roles initialized")
+		log.Println("Default roles initialized")
 	}
 }
 

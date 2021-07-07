@@ -2,8 +2,8 @@ package workspace
 
 import (
 	"errors"
-	"fmt"
 	"jinyaoma/go-experiment/config"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -20,7 +20,7 @@ func init() {
 	var err error
 	disk, err = InitDisk(config.WORKSPACE)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }
 
@@ -66,6 +66,6 @@ func initUserFiles(userPath string, fn UserFilesFunc) {
 		return nil
 	})
 	if err != nil {
-		fmt.Printf("initUserFiles:filepath.Walk() returned %v\n", err)
+		log.Printf("initUserFiles:filepath.Walk() returned %v\n", err)
 	}
 }

@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"fmt"
 	"jinyaoma/go-experiment/config"
 	"jinyaoma/go-experiment/model"
+	"log"
 	"net/http"
 	"strings"
 
@@ -12,9 +12,8 @@ import (
 )
 
 const (
-	CONTROLLER_ADMIN_ERROR_BIND         = "binding error"
-	CONTROLLER_ADMIN_ERROR_UNAUTHORIZED = "unauthorized user"
-	CONTROLLER_ADMIN_ERROR_PASSWORD     = "password unmatched"
+	CONTROLLER_ADMIN_ERROR_BIND     = "binding error"
+	CONTROLLER_ADMIN_ERROR_PASSWORD = "password unmatched"
 )
 
 func Admin() gin.HandlerFunc {
@@ -31,16 +30,22 @@ func Admin() gin.HandlerFunc {
 		}
 
 		isAdmin := strings.Contains(role.Permission, "ADMIN:1")
-		if !isAdmin {
-			c.JSON(http.StatusOK, gin.H{
-				"error":      CONTROLLER_ADMIN_ERROR_UNAUTHORIZED,
-				"isAuthFail": true,
-			})
-			return
-		}
+
+		c.Set("IsAdmin", isAdmin)
 
 		c.Next()
 	}
+}
+
+func GetIsAdmin(c *gin.Context) bool {
+	var value, exist = c.Get("IsAdmin")
+	if exist {
+		isAdmin, ok := value.(bool)
+		if ok {
+			return isAdmin
+		}
+	}
+	return false
 }
 
 func settings(c *gin.Context) {
@@ -78,7 +83,7 @@ func basic(c *gin.Context) {
 	}
 
 	config.User_Limit = form.UserLimit
-	fmt.Printf("[CONFIG] User_Limit SET TO %d\n", config.User_Limit)
+	log.Printf("[CONFIG] User_Limit SET TO %d\n", config.User_Limit)
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
@@ -128,7 +133,7 @@ func resetPassword(c *gin.Context) {
 type AddRoleForm struct {
 	Name       string `form:"name" binding:"required"`
 	Permission string `form:"permission" binding:"required"`
-	Space      uint64 `form:"space" binding:"required"`
+	Space      uint64 `form:"space"`
 }
 
 func addRole(c *gin.Context) {
@@ -176,7 +181,7 @@ type SaveRoleForm struct {
 	RoleID     uint   `form:"roleId" binding:"required"`
 	Name       string `form:"name" binding:"required"`
 	Permission string `form:"permission" binding:"required"`
-	Space      uint64 `form:"space" binding:"required"`
+	Space      uint64 `form:"space"`
 }
 
 func saveRole(c *gin.Context) {
@@ -220,12 +225,12 @@ func saveRole(c *gin.Context) {
 }
 
 func InitAdmin(rg *gin.RouterGroup) {
-	api := rg.Group("/admin")
+	api := rg.Group("/admin").Use(Auth(), Admin())
 	{
-		api.POST("/settings", Auth(), Admin(), settings)
-		api.POST("/basic", Auth(), Admin(), basic)
-		api.POST("/resetPassword", Auth(), Admin(), resetPassword)
-		api.POST("/role/add", Auth(), Admin(), addRole)
-		api.POST("/role/save", Auth(), Admin(), saveRole)
+		api.POST("/settings", settings)
+		api.POST("/basic", basic)
+		api.POST("/resetPassword", resetPassword)
+		api.POST("/role/add", addRole)
+		api.POST("/role/save", saveRole)
 	}
 }
