@@ -365,6 +365,7 @@ table {
   }
   tr {
     transition: 0.2s;
+    border-bottom: 1px solid #f1f2f3;
     &:hover {
       background-color: #fafbfc;
     }

@@ -30,7 +30,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this);
     this.$startLoading();
     this.$http
       .post("/api/admin/settings", {
