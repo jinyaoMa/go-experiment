@@ -341,6 +341,47 @@ func recycle(c *gin.Context) {
 		})
 		return
 	}
+
+	user := GetAuthUser(c)
+
+	var file model.File
+	resultFile := model.GetDB().Where("id = ? AND user_id = ?", form.FileId, user.ID).First(&file)
+	if resultFile.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	resultUpdateRecycled := model.GetDB().Model(&file).Updates(model.File{
+		Recycled: 1,
+	})
+	if resultUpdateRecycled.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	if file.Type == model.FILE_TYPE_DIRECTORY {
+
+	}
+
+	var files []model.File
+	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
+	if resultFiles.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"files": files,
+		},
+	})
 }
 
 func InitFiles(rg *gin.RouterGroup) {
