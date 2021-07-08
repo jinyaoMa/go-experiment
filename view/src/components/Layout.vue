@@ -75,6 +75,7 @@ export default {
   flex-direction: column;
   box-sizing: border-box;
   border-right: 2px solid #f1f2f3;
+  padding-bottom: 5em;
   > a {
     padding: 0 1.8em;
     line-height: 3em;
