@@ -5,6 +5,7 @@
         ref="taskBar"
         :currentFilesCount="currentFiles.length"
         :filesToDownload="filesToDownload"
+        :cutOptions="cutOptions"
         @search="handleSearch"
       />
       <div class="home-frame">
@@ -148,6 +149,10 @@
                       v-if="file.Type === 'file'"
                       :url="getFileDownloadLink(file)"
                     />
+                    <BtnCut
+                      v-if="file.Type === 'file'"
+                      @click="handleCutClick(file)"
+                    />
                     <BtnRename @click="handleRenameClick(file)" />
                   </div>
                 </div>
@@ -170,6 +175,7 @@ import CheckSquare from "../components/CheckSquare.vue";
 import Breadcrumb from "../components/Breadcrumb.vue";
 import BtnDownloadFile from "../components/BtnDownloadFile.vue";
 import BtnRename from "../components/BtnRename.vue";
+import BtnCut from "../components/BtnCut.vue";
 
 export default {
   components: {
@@ -179,6 +185,7 @@ export default {
     Breadcrumb,
     BtnDownloadFile,
     BtnRename,
+    BtnCut,
   },
   watch: {
     $route: {
@@ -188,6 +195,11 @@ export default {
     },
   },
   methods: {
+    handleCutClick(file) {
+      this.cutOptions.srcId = file.ID;
+      this.cutOptions.srcPath = file.Path;
+      this.cutOptions.canPaste = true;
+    },
     handleRenameFile(file) {
       this.$startLoading();
       this.$http
@@ -379,6 +391,11 @@ export default {
       sortOrder: "DESC",
       renameFileId: 0,
       renameFileName: "",
+      cutOptions: {
+        canPaste: false,
+        srcId: 0,
+        srcPath: "",
+      },
     };
   },
   mounted() {

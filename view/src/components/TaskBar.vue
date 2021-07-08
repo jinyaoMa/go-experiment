@@ -3,9 +3,17 @@
     <div class="start">
       <button class="btn-upload">{{ $locale.common.upload }}</button>
       <button class="btn-new-folder">{{ $locale.common.newFolder }}</button>
-      <button v-if="filesToDownload.length > 0" class="btn-download">
+      <button v-if="filesToDownload.length > 0" class="btn-new-folder">
         {{ $locale.common.download }}
       </button>
+      <button
+        v-if="cutOptions.canPaste"
+        class="btn-new-folder"
+        @click="handlePaste"
+      >
+        {{ $locale.common.paste }}
+      </button>
+      <span class="src-path-hint">{{ cutOptions.srcPath }}</span>
     </div>
     <div class="end">
       <div class="loaded">
@@ -48,6 +56,16 @@ export default {
         return [];
       },
     },
+    cutOptions: {
+      type: Object,
+      default() {
+        return {
+          canPaste: false,
+          srcId: 0,
+          srcPath: "",
+        };
+      },
+    },
   },
   computed: {
     searchCompleteText() {
@@ -76,6 +94,34 @@ export default {
     },
   },
   methods: {
+    handlePaste() {
+      this.$startLoading();
+      this.$http
+        .post("/api/files/moveFile", {
+          id: this.$user.id,
+          token: this.$user.token,
+          srcId: this.cutOptions.srcId,
+          desId: this.$getCurrentPathId(),
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.$setFiles(res.data.data.files);
+            this.clearCutOptions();
+          } else {
+            this.$showError(this.$locale.common.errorMsg);
+          }
+          this.$stopLoading();
+        })
+        .catch((err) => {
+          this.$showError(this.$locale.common.errorServer);
+          this.$stopLoading();
+        });
+    },
+    clearCutOptions() {
+      this.cutOptions.canPaste = false;
+      this.cutOptions.srcId = 0;
+      this.cutOptions.srcPath = "";
+    },
     searchCompleteCallback() {
       this.searchComplete = true;
     },
@@ -109,7 +155,6 @@ export default {
   margin-right: 1em;
   line-height: 2.33;
   font-family: inherit;
-  letter-spacing: 0.1em;
   outline: none;
   transition: 0.2s;
   border-radius: 4px;
@@ -129,8 +174,7 @@ export default {
     background-color: #555555;
   }
 }
-.btn-new-folder,
-.btn-download {
+.btn-new-folder {
   font-weight: 500;
   background-color: #f1f2f3;
   &:hover {
@@ -175,5 +219,12 @@ export default {
 .loaded {
   margin-right: 1em;
   font-size: 0.9em;
+}
+.src-path-hint {
+  font-size: 0.8em;
+  color: #989796;
+  align-self: flex-end;
+  margin-bottom: 0.6em;
+  letter-spacing: 0;
 }
 </style>

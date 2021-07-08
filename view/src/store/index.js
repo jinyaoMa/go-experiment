@@ -121,6 +121,21 @@ Vue.mixin({
     },
     $formatDate(date, fmtStr) {
       return moment(date).format(fmtStr);
+    },
+    $getCurrentPathId() {
+      let currentPath = this.$route.query.currentPath;
+      if (typeof currentPath === "string" && currentPath.length > 0) {
+        let file = this.$files.find((f) => f.Path === currentPath);
+        if (file) {
+          return file.ID;
+        }
+      } else {
+        let file = this.$files.find((f) => f.Path === ".");
+        if (file) {
+          return file.ID;
+        }
+      }
+      return 0;
     }
   }
 });

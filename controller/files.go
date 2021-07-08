@@ -38,7 +38,7 @@ func getFiles(c *gin.Context) {
 }
 
 type RenameFileForm struct {
-	FileId      string `form:"fileId" binding:"required"`
+	FileId      uint   `form:"fileId" binding:"required"`
 	NewFilename string `form:"filename" binding:"required"`
 }
 
@@ -108,10 +108,101 @@ func renameFile(c *gin.Context) {
 	})
 }
 
+type MoveFileForm struct {
+	SrcId uint `form:"srcId" binding:"required"`
+	DesId uint `form:"desId" binding:"required"`
+}
+
+func moveFile(c *gin.Context) {
+	var form MoveFileForm
+	err := c.ShouldBindWith(&form, binding.FormPost)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error":  CONTROLLER_FILES_ERROR_BIND,
+			"isFail": true,
+		})
+		return
+	}
+
+	user := GetAuthUser(c)
+
+	var des model.File
+	resultDes := model.GetDB().Where("id = ? AND user_id = ?", form.DesId, user.ID).First(&des)
+	if resultDes.Error != nil || des.Type != model.FILE_TYPE_DIRECTORY {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	var src model.File
+	resultSrc := model.GetDB().Where("id = ? AND user_id = ?", form.SrcId, user.ID).First(&src)
+	if resultSrc.Error != nil || src.Type != model.FILE_TYPE_FILE {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	userWorkspace := filepath.Join(config.WORKSPACE, user.Account)
+	oldPath := filepath.Join(userWorkspace, src.Path)
+	newPath := filepath.Join(userWorkspace, des.Path, filepath.Base(oldPath))
+	errMove := os.Rename(oldPath, newPath)
+	if errMove != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+	relativeNewPath, errRel := filepath.Rel(userWorkspace, newPath)
+	if errRel != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+	resultUpdateSrc := model.GetDB().Model(&src).Updates(model.File{
+		Path: relativeNewPath,
+	})
+	if resultUpdateSrc.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	var files []model.File
+	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
+	if resultFiles.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"files": files,
+		},
+	})
+}
+
+type NewFolderForm struct {
+	FolderName uint `form:"folderName" binding:"required"`
+	DesId      uint `form:"desId" binding:"required"`
+}
+
+func newFolder(c *gin.Context) {
+
+}
+
 func InitFiles(rg *gin.RouterGroup) {
 	api := rg.Group("/files").Use(Auth())
 	{
 		api.POST(".", getFiles)
 		api.POST("/renameFile", renameFile)
+		api.POST("/moveFile", moveFile)
+		api.POST("/newFolder", newFolder)
 	}
 }

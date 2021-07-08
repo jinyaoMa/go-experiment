@@ -18,6 +18,8 @@ export default {
     upload: "Upload",
     download: "Download",
     rename: "Rename",
+    cut: "Cut and paste",
+    paste: "Paste",
     newFolder: "New Folder",
     searchPlaceholder: "Search",
     error: "ERROR",
