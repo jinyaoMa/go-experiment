@@ -2,7 +2,9 @@
   <div class="task-bar">
     <div class="start">
       <button class="btn-upload">{{ $locale.common.upload }}</button>
-      <button class="btn-new-folder">{{ $locale.common.newFolder }}</button>
+      <button v-if="canNewFolder" class="btn-new-folder">
+        {{ $locale.common.newFolder }}
+      </button>
       <button v-if="filesToDownload.length > 0" class="btn-new-folder">
         {{ $locale.common.download }}
       </button>
@@ -64,6 +66,12 @@ export default {
           srcId: 0,
           srcPath: "",
         };
+      },
+    },
+    canNewFolder: {
+      type: Boolean,
+      default() {
+        return false;
       },
     },
   },

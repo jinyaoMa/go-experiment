@@ -6,6 +6,7 @@
         :currentFilesCount="currentFiles.length"
         :filesToDownload="filesToDownload"
         :cutOptions="cutOptions"
+        :canNewFolder="searchKeyword.length === 0"
         @search="handleSearch"
       />
       <div class="home-frame">
@@ -372,8 +373,8 @@ export default {
             let find = file.Path.match(/\\/g);
             let temp = find ? find.length : 0;
             if (
-              file.Path.includes(this.searchKeyword) &&
               file.Path.startsWith(currentPath) &&
+              file.Path.replace(currentPath, "").includes(this.searchKeyword) &&
               temp > depth
             ) {
               return true;

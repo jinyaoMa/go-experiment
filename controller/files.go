@@ -22,7 +22,7 @@ func getFiles(c *gin.Context) {
 	user := GetAuthUser(c)
 
 	var files []model.File
-	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
+	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
 	if resultFiles.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -173,7 +173,7 @@ func moveFile(c *gin.Context) {
 	}
 
 	var files []model.File
-	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
+	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
 	if resultFiles.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -220,7 +220,7 @@ func shareFile(c *gin.Context) {
 	}
 
 	var files []model.File
-	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
+	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
 	if resultFiles.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -245,7 +245,77 @@ type NewFolderForm struct {
 }
 
 func newFolder(c *gin.Context) {
+	var form NewFolderForm
+	err := c.ShouldBindWith(&form, binding.FormPost)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error":  CONTROLLER_FILES_ERROR_BIND,
+			"isFail": true,
+		})
+		return
+	}
 
+	if strings.ContainsAny(form.FolderName, "\\/:*?\"<>|") {
+		c.JSON(http.StatusOK, gin.H{
+			"fail": CONTROLLER_FILES_ERROR_FILENAME,
+		})
+		return
+	}
+
+	user := GetAuthUser(c)
+
+	var des model.File
+	resultDes := model.GetDB().Where("id = ? AND user_id = ?", form.DesId, user.ID).First(&des)
+	if resultDes.Error != nil || des.Type != model.FILE_TYPE_DIRECTORY {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	userWorkspace := filepath.Join(config.WORKSPACE, user.Account)
+	desPath := filepath.Join(userWorkspace, des.Path)
+	newFolderPath := filepath.Join(desPath, form.FolderName)
+
+	relativeNewFolderPath, errRel := filepath.Rel(userWorkspace, newFolderPath)
+	if errRel != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	shareCode := config.GenerateShareCode(4)
+	resultNewFolder := model.GetDB().Create(&model.File{
+		Name:      form.FolderName,
+		Path:      relativeNewFolderPath,
+		Type:      model.FILE_TYPE_DIRECTORY,
+		Extension: filepath.Ext(relativeNewFolderPath),
+		Size:      0,
+		ShareCode: shareCode,
+	})
+	if resultNewFolder.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	var files []model.File
+	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
+	if resultFiles.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"files": files,
+		},
+	})
 }
 
 func InitFiles(rg *gin.RouterGroup) {
