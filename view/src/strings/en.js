@@ -20,6 +20,7 @@ export default {
     rename: "Rename",
     cut: "Cut and paste",
     paste: "Paste",
+    sharing: "Share",
     newFolder: "New Folder",
     searchPlaceholder: "Search",
     error: "ERROR",

@@ -63,6 +63,8 @@ Vue.mixin({
       $loading: "loading",
       $hasError: "hasError",
       $errorMsg: "errorMsg",
+      $hasShareNotice: "hasShareNotice",
+      $shareNoticeLink: "shareNoticeLink",
       $locale: "locale",
       $user: "user",
       $files: "files"
@@ -74,6 +76,8 @@ Vue.mixin({
       $stopLoading: "stopLoading",
       $showError: "showError",
       $hideError: "hideError",
+      $showShareNotice: "showShareNotice",
+      $hideShareNotice: "hideShareNotice",
       $swapLang: "swapLang",
       $setUser: "setUser",
       $setFiles: "setFiles",
@@ -145,6 +149,8 @@ export default new Vuex.Store({
     loading: true,
     hasError: false,
     errorMsg: "",
+    hasShareNotice: false,
+    shareNoticeLink: "",
     lang: isChinese() ? langZH : langEN,
     ...loadLang(),
     user: {
@@ -168,6 +174,12 @@ export default new Vuex.Store({
     },
     errorMsg(state) {
       return state.errorMsg;
+    },
+    hasShareNotice(state) {
+      return state.hasShareNotice;
+    },
+    shareNoticeLink(state) {
+      return state.shareNoticeLink;
     },
     locale(state) {
       switch (state.lang) {
@@ -198,6 +210,13 @@ export default new Vuex.Store({
     },
     hideError(state) {
       state.hasError = false;
+    },
+    showShareNotice(state, text) {
+      state.shareNoticeLink = text;
+      state.hasShareNotice = true;
+    },
+    hideShareNotice(state) {
+      state.hasShareNotice = false;
     },
     swapLang(state) {
       switch (state.lang) {
@@ -247,6 +266,12 @@ export default new Vuex.Store({
     },
     hideError(context) {
       context.commit("hideError");
+    },
+    showShareNotice(context, text) {
+      context.commit("showShareNotice", text);
+    },
+    hideShareNotice(context) {
+      context.commit("hideShareNotice");
     },
     swapLang(context) {
       context.commit("swapLang");

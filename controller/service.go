@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,10 +28,6 @@ func download(c *gin.Context) {
 		c.Status(http.StatusNotFound)
 		return
 	}
-	if len(query.RelativeTokenAfterIndex) < 64 {
-		c.Status(http.StatusNotFound)
-		return
-	}
 
 	var file model.File
 	resultFile := model.GetDB().Where("id = ? AND files.share_code = ? AND files.type = ?", query.FileId, query.ShareCode, model.FILE_TYPE_FILE).First(&file)
@@ -40,13 +37,17 @@ func download(c *gin.Context) {
 	}
 
 	var path string
-	if file.ShareExpiredAt.After(time.Now()) && len(query.UserAccount) > 0 {
+	if file.ShareExpiredAt.After(time.Now()) && utf8.RuneCountInString(query.UserAccount) > 0 {
 		if strings.ContainsAny(query.UserAccount, "\\/:*?\"<>|") {
 			c.Status(http.StatusNotFound)
 			return
 		}
 		path = filepath.Join(config.WORKSPACE, query.UserAccount, file.Path)
 	} else {
+		if utf8.RuneCountInString(query.RelativeTokenAfterIndex) < 64 {
+			c.Status(http.StatusNotFound)
+			return
+		}
 		var user model.User
 		resultUser := model.GetDB().Where("id = ? AND SUBSTR(users.token, ?) = ?", file.UserID, query.IndexPointToToken, query.RelativeTokenAfterIndex).First(&user)
 		if resultUser.Error != nil {

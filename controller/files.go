@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -188,9 +189,59 @@ func moveFile(c *gin.Context) {
 	})
 }
 
+type ShareFileForm struct {
+	FileId uint `form:"fileId" binding:"required"`
+}
+
+func shareFile(c *gin.Context) {
+	var form ShareFileForm
+	err := c.ShouldBindWith(&form, binding.FormPost)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error":  CONTROLLER_FILES_ERROR_BIND,
+			"isFail": true,
+		})
+		return
+	}
+
+	user := GetAuthUser(c)
+
+	shareCode := config.GenerateShareCode(4)
+	ShareExpiredAt := time.Now().AddDate(0, 1, 0)
+	resultUpdateShare := model.GetDB().Model(&model.File{}).Where("id = ? AND user_id = ?", form.FileId, user.ID).Updates(model.File{
+		ShareCode:      shareCode,
+		ShareExpiredAt: ShareExpiredAt,
+	})
+	if resultUpdateShare.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	var files []model.File
+	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
+	if resultFiles.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"files": files,
+			"c":     shareCode,
+			"d":     form.FileId,
+			"e":     user.Account,
+		},
+	})
+}
+
 type NewFolderForm struct {
-	FolderName uint `form:"folderName" binding:"required"`
-	DesId      uint `form:"desId" binding:"required"`
+	FolderName string `form:"folderName" binding:"required"`
+	DesId      uint   `form:"desId" binding:"required"`
 }
 
 func newFolder(c *gin.Context) {
@@ -203,6 +254,7 @@ func InitFiles(rg *gin.RouterGroup) {
 		api.POST(".", getFiles)
 		api.POST("/renameFile", renameFile)
 		api.POST("/moveFile", moveFile)
+		api.POST("/shareFile", shareFile)
 		api.POST("/newFolder", newFolder)
 	}
 }

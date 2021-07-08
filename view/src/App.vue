@@ -1,11 +1,8 @@
 <template>
   <div id="app">
-    <router-view
-      :class="{
-        covered: $loading || $hasError,
-      }"
-    />
+    <router-view :class="{ covered }" />
     <Loading v-if="$loading" />
+    <ShareNotice v-if="$hasShareNotice" />
     <Error v-if="$hasError" />
   </div>
 </template>
@@ -13,10 +10,17 @@
 <script>
 import Loading from "./components/Loading.vue";
 import Error from "./components/Error.vue";
+import ShareNotice from "./components/ShareNotice.vue";
 export default {
   components: {
     Loading,
     Error,
+    ShareNotice,
+  },
+  computed: {
+    covered() {
+      return this.$loading || this.$hasShareNotice || this.$hasError;
+    },
   },
   mounted() {
     console.log(this);

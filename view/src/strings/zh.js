@@ -20,6 +20,7 @@ export default {
     rename: "重命名",
     cut: "剪切",
     paste: "粘贴",
+    sharing: "分享",
     newFolder: "新建文件夹",
     searchPlaceholder: "搜索",
     error: "错误",

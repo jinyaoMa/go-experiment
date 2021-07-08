@@ -149,6 +149,10 @@
                       v-if="file.Type === 'file'"
                       :url="getFileDownloadLink(file)"
                     />
+                    <BtnSharing
+                      v-if="file.Type === 'file'"
+                      @click="handleSharingClick(file)"
+                    />
                     <BtnCut
                       v-if="file.Type === 'file'"
                       @click="handleCutClick(file)"
@@ -176,6 +180,7 @@ import Breadcrumb from "../components/Breadcrumb.vue";
 import BtnDownloadFile from "../components/BtnDownloadFile.vue";
 import BtnRename from "../components/BtnRename.vue";
 import BtnCut from "../components/BtnCut.vue";
+import BtnSharing from "../components/BtnSharing.vue";
 
 export default {
   components: {
@@ -186,6 +191,7 @@ export default {
     BtnDownloadFile,
     BtnRename,
     BtnCut,
+    BtnSharing,
   },
   watch: {
     $route: {
@@ -195,6 +201,30 @@ export default {
     },
   },
   methods: {
+    handleSharingClick(file) {
+      this.$startLoading();
+      this.$http
+        .post("/api/files/shareFile", {
+          id: this.$user.id,
+          token: this.$user.token,
+          fileId: file.ID,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            let data = res.data.data;
+            let shareLink = `${this.$http.defaults.baseURL}/api/service/download?c=${data.c}&d=${data.d}&e=${data.e}`;
+            this.$setFiles(data.files);
+            this.$showShareNotice(shareLink);
+          } else {
+            this.$showError(this.$locale.common.errorMsg);
+          }
+          this.$stopLoading();
+        })
+        .catch((err) => {
+          this.$showError(this.$locale.common.errorServer);
+          this.$stopLoading();
+        });
+    },
     handleCutClick(file) {
       this.cutOptions.srcId = file.ID;
       this.cutOptions.srcPath = file.Path;
