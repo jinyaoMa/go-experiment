@@ -277,6 +277,14 @@ func newFolder(c *gin.Context) {
 	desPath := filepath.Join(userWorkspace, des.Path)
 	newFolderPath := filepath.Join(desPath, form.FolderName)
 
+	errMkdir := os.Mkdir(newFolderPath, os.ModeDir)
+	if errMkdir != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
 	relativeNewFolderPath, errRel := filepath.Rel(userWorkspace, newFolderPath)
 	if errRel != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -293,6 +301,7 @@ func newFolder(c *gin.Context) {
 		Extension: filepath.Ext(relativeNewFolderPath),
 		Size:      0,
 		ShareCode: shareCode,
+		UserID:    user.ID,
 	})
 	if resultNewFolder.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -318,6 +327,22 @@ func newFolder(c *gin.Context) {
 	})
 }
 
+type RecycleForm struct {
+	FileId uint `form:"fileId" binding:"required"`
+}
+
+func recycle(c *gin.Context) {
+	var form RecycleForm
+	err := c.ShouldBindWith(&form, binding.FormPost)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error":  CONTROLLER_FILES_ERROR_BIND,
+			"isFail": true,
+		})
+		return
+	}
+}
+
 func InitFiles(rg *gin.RouterGroup) {
 	api := rg.Group("/files").Use(Auth())
 	{
@@ -326,5 +351,6 @@ func InitFiles(rg *gin.RouterGroup) {
 		api.POST("/moveFile", moveFile)
 		api.POST("/shareFile", shareFile)
 		api.POST("/newFolder", newFolder)
+		api.POST("/recycle", recycle)
 	}
 }

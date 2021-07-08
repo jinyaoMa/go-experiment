@@ -8,6 +8,7 @@
         :cutOptions="cutOptions"
         :canNewFolder="searchKeyword.length === 0"
         @search="handleSearch"
+        @newFolder="handleNewFolderClick"
       />
       <div class="home-frame">
         <Breadcrumb
@@ -84,6 +85,27 @@
                 </div>
               </td>
             </tr>
+            <tr v-if="showNewFolderForm">
+              <td class="col-select"></td>
+              <td colspan="3">
+                <div class="col-filename">
+                  <div class="col-filename-start">
+                    <div class="form-rename">
+                      <input
+                        type="text"
+                        v-model="newFolderName"
+                        @keyup.enter="handleNewFolder"
+                      />
+                      <i class="fas fa-check fa-fw" @click="handleNewFolder" />
+                      <i
+                        class="fas fa-times fa-fw"
+                        @click="showNewFolderForm = false"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
             <tr v-for="file in currentFiles" :key="file.ID">
               <td class="col-select">
                 <CheckSquare
@@ -99,7 +121,11 @@
                     class="col-filename-start"
                   >
                     <div v-if="file.canRename" class="form-rename">
-                      <input type="text" v-model="renameFileName" />
+                      <input
+                        type="text"
+                        v-model="renameFileName"
+                        @keyup.enter="handleRenameFile(file)"
+                      />
                       <i
                         class="fas fa-check fa-fw"
                         @click="handleRenameFile(file)"
@@ -127,7 +153,11 @@
                   </div>
                   <div v-else class="col-filename-start">
                     <div v-if="file.canRename" class="form-rename">
-                      <input type="text" v-model="renameFileName" />
+                      <input
+                        type="text"
+                        v-model="renameFileName"
+                        @keyup.enter="handleRenameFile(file)"
+                      />
                       <i
                         class="fas fa-check fa-fw"
                         @click="handleRenameFile(file)"
@@ -202,6 +232,33 @@ export default {
     },
   },
   methods: {
+    handleNewFolder() {
+      this.$startLoading();
+      this.$http
+        .post("/api/files/newFolder", {
+          id: this.$user.id,
+          token: this.$user.token,
+          folderName: this.newFolderName,
+          desId: this.$getCurrentPathId(),
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.$setFiles(res.data.data.files);
+            this.showNewFolderForm = false;
+          } else {
+            this.$showError(this.$locale.common.errorMsg);
+          }
+          this.$stopLoading();
+        })
+        .catch((err) => {
+          this.$showError(this.$locale.common.errorServer);
+          this.$stopLoading();
+        });
+    },
+    handleNewFolderClick() {
+      this.newFolderName = this.$locale.common.newFolder;
+      this.showNewFolderForm = true;
+    },
     handleSharingClick(file) {
       this.$startLoading();
       this.$http
@@ -422,11 +479,13 @@ export default {
       sortOrder: "DESC",
       renameFileId: 0,
       renameFileName: "",
+      newFolderName: "",
       cutOptions: {
         canPaste: false,
         srcId: 0,
         srcPath: "",
       },
+      showNewFolderForm: false,
     };
   },
   mounted() {

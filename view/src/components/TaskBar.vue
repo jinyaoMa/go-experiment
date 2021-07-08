@@ -2,7 +2,11 @@
   <div class="task-bar">
     <div class="start">
       <button class="btn-upload">{{ $locale.common.upload }}</button>
-      <button v-if="canNewFolder" class="btn-new-folder">
+      <button
+        v-if="canNewFolder"
+        class="btn-new-folder"
+        @click="$emit('newFolder')"
+      >
         {{ $locale.common.newFolder }}
       </button>
       <button v-if="filesToDownload.length > 0" class="btn-new-folder">
