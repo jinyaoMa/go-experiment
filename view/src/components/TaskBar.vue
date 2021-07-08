@@ -226,6 +226,7 @@ export default {
 }
 .loaded {
   margin-right: 1em;
+  margin-left: 1em;
   font-size: 0.9em;
 }
 .src-path-hint {

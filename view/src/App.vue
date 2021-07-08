@@ -32,6 +32,7 @@ export default {
 <style lang="scss">
 body {
   margin: 0;
+  width: fit-content;
 }
 #app {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
