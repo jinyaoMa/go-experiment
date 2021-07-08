@@ -189,6 +189,7 @@
                       @click="handleCutClick(file)"
                     />
                     <BtnRename @click="handleRenameClick(file)" />
+                    <BtnRecycling @click="handleRecyclingClick(file)" />
                   </div>
                 </div>
               </td>
@@ -212,6 +213,7 @@ import BtnDownloadFile from "../components/BtnDownloadFile.vue";
 import BtnRename from "../components/BtnRename.vue";
 import BtnCut from "../components/BtnCut.vue";
 import BtnSharing from "../components/BtnSharing.vue";
+import BtnRecycling from "../components/BtnRecycling.vue";
 
 export default {
   components: {
@@ -223,6 +225,7 @@ export default {
     BtnRename,
     BtnCut,
     BtnSharing,
+    BtnRecycling,
   },
   watch: {
     $route: {
@@ -232,6 +235,27 @@ export default {
     },
   },
   methods: {
+    handleRecyclingClick(file) {
+      this.$startLoading();
+      this.$http
+        .post("/api/files/recycle", {
+          id: this.$user.id,
+          token: this.$user.token,
+          fileId: file.ID,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.$setFiles(res.data.data.files);
+          } else {
+            this.$showError(this.$locale.common.errorMsg);
+          }
+          this.$stopLoading();
+        })
+        .catch((err) => {
+          this.$showError(this.$locale.common.errorServer);
+          this.$stopLoading();
+        });
+    },
     handleNewFolder() {
       this.$startLoading();
       this.$http

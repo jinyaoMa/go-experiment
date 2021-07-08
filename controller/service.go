@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 	"unicode/utf8"
 
@@ -30,7 +29,7 @@ func download(c *gin.Context) {
 	}
 
 	var file model.File
-	resultFile := model.GetDB().Where("id = ? AND files.share_code = ? AND files.type = ?", query.FileId, query.ShareCode, model.FILE_TYPE_FILE).First(&file)
+	resultFile := model.GetDB().Where("id = ? AND share_code = ? AND type = ? AND recycled = 0", query.FileId, query.ShareCode, model.FILE_TYPE_FILE).First(&file)
 	if resultFile.Error != nil {
 		c.Status(http.StatusNotFound)
 		return
@@ -38,7 +37,9 @@ func download(c *gin.Context) {
 
 	var path string
 	if file.ShareExpiredAt.After(time.Now()) && utf8.RuneCountInString(query.UserAccount) > 0 {
-		if strings.ContainsAny(query.UserAccount, "\\/:*?\"<>|") {
+		var user model.User
+		resultUser := model.GetDB().Where("id = ? AND account = ?", file.UserID, query.UserAccount).First(&user)
+		if resultUser.Error != nil {
 			c.Status(http.StatusNotFound)
 			return
 		}

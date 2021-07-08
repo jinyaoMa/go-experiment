@@ -21,6 +21,7 @@ export default {
     cut: "Cut and paste",
     paste: "Paste",
     sharing: "Share",
+    recycling: "Delete",
     newFolder: "New Folder",
     searchPlaceholder: "Search",
     error: "ERROR",

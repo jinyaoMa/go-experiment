@@ -21,6 +21,7 @@ export default {
     cut: "剪切",
     paste: "粘贴",
     sharing: "分享",
+    recycling: "删除",
     newFolder: "新建文件夹",
     searchPlaceholder: "搜索",
     error: "错误",

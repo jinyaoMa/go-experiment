@@ -80,6 +80,8 @@ func GetAuthUser(c *gin.Context) model.User {
 
 func RunRouter() {
 	router := gin.Default()
+	// Set a lower memory limit for multipart forms (default is 32 MiB)
+	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 	router.Use(middleware.Cors())
 
 	api := router.Group("/api")
