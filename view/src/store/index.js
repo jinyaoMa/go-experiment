@@ -60,6 +60,8 @@ Vue.use(Vuex);
 Vue.mixin({
   computed: {
     ...Vuex.mapGetters({
+      $progress: "progress",
+      $progressing: "progressing",
       $loading: "loading",
       $hasError: "hasError",
       $errorMsg: "errorMsg",
@@ -72,6 +74,9 @@ Vue.mixin({
   },
   methods: {
     ...Vuex.mapActions({
+      $setProgress: "setProgress",
+      $startProgressing: "startProgressing",
+      $stopProgressing: "stopProgressing",
       $startLoading: "startLoading",
       $stopLoading: "stopLoading",
       $showError: "showError",
@@ -146,6 +151,8 @@ Vue.mixin({
 
 export default new Vuex.Store({
   state: {
+    progress: 0,
+    progressing: false,
     loading: true,
     hasError: false,
     errorMsg: "",
@@ -166,6 +173,12 @@ export default new Vuex.Store({
     files: []
   },
   getters: {
+    progress(state) {
+      return state.progress;
+    },
+    progressing(state) {
+      return state.progressing;
+    },
     loading(state) {
       return state.loading;
     },
@@ -198,6 +211,15 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setProgress(state, percent) {
+      state.progress = percent;
+    },
+    startProgressing(state) {
+      state.progressing = true;
+    },
+    stopProgressing(state) {
+      state.progressing = false;
+    },
     startLoading(state) {
       state.loading = true;
     },
@@ -255,6 +277,15 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    setProgress(context, percent) {
+      context.commit("setProgress", percent);
+    },
+    startProgressing(context) {
+      context.commit("startProgressing");
+    },
+    stopProgressing(context) {
+      context.commit("stopProgressing");
+    },
     startLoading(context) {
       context.commit("startLoading");
     },

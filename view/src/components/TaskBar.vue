@@ -1,7 +1,15 @@
 <template>
   <div class="task-bar">
     <div class="start">
-      <button class="btn-upload">{{ $locale.common.upload }}</button>
+      <div class="btn-upload">
+        {{ $locale.common.upload }}
+        <input
+          type="file"
+          class="btn-upload"
+          @change="handleUploadClick"
+          ref="upload"
+        />
+      </div>
       <button
         v-if="canNewFolder"
         class="btn-new-folder"
@@ -106,6 +114,12 @@ export default {
     },
   },
   methods: {
+    handleUploadClick() {
+      let upload = this.$refs.upload;
+      if (upload && upload.files.length === 1) {
+        this.$emit("upload", upload.files[0]);
+      }
+    },
     handlePaste() {
       this.$startLoading();
       this.$http
@@ -182,6 +196,7 @@ export default {
   font-weight: 500;
   color: #ffffff;
   background-color: #333333;
+  position: relative;
   &:hover {
     background-color: #555555;
   }
@@ -239,5 +254,15 @@ export default {
   align-self: flex-end;
   margin-bottom: 0.6em;
   letter-spacing: 0;
+}
+input[type="file"] {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 1;
 }
 </style>

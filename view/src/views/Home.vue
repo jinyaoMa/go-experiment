@@ -9,6 +9,7 @@
         :canNewFolder="searchKeyword.length === 0"
         @search="handleSearch"
         @newFolder="handleNewFolderClick"
+        @upload="handleUploadFile"
       />
       <div class="home-frame">
         <Breadcrumb
@@ -235,6 +236,42 @@ export default {
     },
   },
   methods: {
+    handleUploadFile(file) {
+      let data = new FormData();
+      data.append("id", this.$user.id);
+      data.append("token", this.$user.token);
+      data.append("desId", this.$getCurrentPathId());
+      data.append("file", file);
+      this.$startProgressing();
+      this.$http
+        .post("/api/service/upload", data, {
+          headers: {
+            "Content-Type": "multipart/form-data;charset=utf-8",
+          },
+          transformRequest: [
+            function (data) {
+              return data;
+            },
+          ],
+          onUploadProgress: (progressEvent) => {
+            let complete =
+              ((progressEvent.loaded / progressEvent.total) * 100) | 0;
+            this.$setProgress(complete);
+          },
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.$setFiles(res.data.data.files);
+          } else {
+            this.$showError(this.$locale.common.errorMsg);
+          }
+          this.$stopProgressing();
+        })
+        .catch((err) => {
+          this.$showError(this.$locale.common.errorServer);
+          this.$stopProgressing();
+        });
+    },
     handleRecyclingClick(file) {
       this.$startLoading();
       this.$http

@@ -3,6 +3,7 @@
     <router-view :class="{ covered }" />
     <Loading v-if="$loading" />
     <ShareNotice v-if="$hasShareNotice" />
+    <Progressing v-if="$progressing" />
     <Error v-if="$hasError" />
   </div>
 </template>
@@ -11,15 +12,22 @@
 import Loading from "./components/Loading.vue";
 import Error from "./components/Error.vue";
 import ShareNotice from "./components/ShareNotice.vue";
+import Progressing from "./components/Progressing.vue";
 export default {
   components: {
     Loading,
     Error,
     ShareNotice,
+    Progressing,
   },
   computed: {
     covered() {
-      return this.$loading || this.$hasShareNotice || this.$hasError;
+      return (
+        this.$loading ||
+        this.$hasShareNotice ||
+        this.$progressing ||
+        this.$hasError
+      );
     },
   },
   mounted() {

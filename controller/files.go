@@ -3,7 +3,6 @@ package controller
 import (
 	"jinyaoma/go-experiment/config"
 	"jinyaoma/go-experiment/model"
-	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -396,96 +395,6 @@ func recycle(c *gin.Context) {
 	})
 }
 
-type UploadForm struct {
-	File  *multipart.FileHeader `form:"file" binding:"required"`
-	DesId uint                  `form:"desId" binding:"required"`
-}
-
-func upload(c *gin.Context) {
-	var form UploadForm
-	err := c.ShouldBindWith(&form, binding.FormMultipart)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error":  CONTROLLER_FILES_ERROR_BIND,
-			"isFail": true,
-		})
-		return
-	}
-
-	user := GetAuthUser(c)
-
-	var des model.File
-	resultDes := model.GetDB().Where("id = ? AND user_id = ?", form.DesId, user.ID).First(&des)
-	if resultDes.Error != nil || des.Type != model.FILE_TYPE_DIRECTORY {
-		c.JSON(http.StatusOK, gin.H{
-			"error": http.StatusInternalServerError,
-		})
-		return
-	}
-
-	// Upload the file to specific dst.
-	userWorkspace := filepath.Join(config.WORKSPACE, user.Account)
-	desPath := filepath.Join(userWorkspace, des.Path)
-	filename := filepath.Base(form.File.Filename)
-	savePath := filepath.Join(desPath, filename)
-	errSave := c.SaveUploadedFile(form.File, savePath)
-	if errSave != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error": http.StatusInternalServerError,
-		})
-		return
-	}
-
-	relativeSavePath, errRel := filepath.Rel(userWorkspace, savePath)
-	if errRel != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error": http.StatusInternalServerError,
-		})
-		return
-	}
-
-	fileInfo, errFi := os.Stat(savePath)
-	if errFi != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error": http.StatusInternalServerError,
-		})
-		return
-	}
-
-	shareCode := config.GenerateShareCode(4)
-	resultNewFile := model.GetDB().Create(&model.File{
-		Name:      filename,
-		Path:      relativeSavePath,
-		Type:      model.FILE_TYPE_FILE,
-		Extension: filepath.Ext(relativeSavePath),
-		Size:      uint64(fileInfo.Size()),
-		ShareCode: shareCode,
-		UserID:    user.ID,
-	})
-	if resultNewFile.Error != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error": http.StatusInternalServerError,
-		})
-		return
-	}
-
-	var files []model.File
-	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
-	if resultFiles.Error != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error": http.StatusInternalServerError,
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data": gin.H{
-			"files": files,
-		},
-	})
-}
-
 func InitFiles(rg *gin.RouterGroup) {
 	api := rg.Group("/files").Use(Auth())
 	{
@@ -495,6 +404,5 @@ func InitFiles(rg *gin.RouterGroup) {
 		api.POST("/shareFile", shareFile)
 		api.POST("/newFolder", newFolder)
 		api.POST("/recycle", recycle)
-		api.POST("/upload", upload)
 	}
 }

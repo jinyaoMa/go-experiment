@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"errors"
 	"jinyaoma/go-experiment/config"
 	"jinyaoma/go-experiment/model"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -10,6 +12,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"gorm.io/gorm"
 )
 
 type DownloadQuery struct {
@@ -70,9 +74,106 @@ func download(c *gin.Context) {
 	c.File(path)
 }
 
+type UploadForm struct {
+	ID    uint                  `form:"id" binding:"required"`
+	Token string                `form:"token" binding:"required"`
+	File  *multipart.FileHeader `form:"file" binding:"required"`
+	DesId uint                  `form:"desId" binding:"required"`
+}
+
+func upload(c *gin.Context) {
+	var form UploadForm
+	err := c.ShouldBindWith(&form, binding.FormMultipart)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error":  err.Error(),
+			"isFail": true,
+		})
+		return
+	}
+
+	var user model.User
+	resultFindUser := model.GetDB().First(&user, "id = ? AND token = ? AND token_expired_at > ?", form.ID, form.Token, time.Now())
+	if errors.Is(resultFindUser.Error, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusOK, gin.H{
+			"fail": CONTROLLER_AUTH_ERROR_USER_NOT_FOUND,
+		})
+		return
+	} else if resultFindUser.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	var des model.File
+	resultDes := model.GetDB().Where("id = ? AND user_id = ?", form.DesId, user.ID).First(&des)
+	if resultDes.Error != nil || des.Type != model.FILE_TYPE_DIRECTORY {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	// Upload the file to specific dst.
+	userWorkspace := filepath.Join(config.WORKSPACE, user.Account)
+	desPath := filepath.Join(userWorkspace, des.Path)
+	filename := filepath.Base(form.File.Filename)
+	savePath := filepath.Join(desPath, filename)
+	errSave := c.SaveUploadedFile(form.File, savePath)
+	if errSave != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	relativeSavePath, errRel := filepath.Rel(userWorkspace, savePath)
+	if errRel != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	shareCode := config.GenerateShareCode(4)
+	resultNewFile := model.GetDB().Create(&model.File{
+		Name:      filename,
+		Path:      relativeSavePath,
+		Type:      model.FILE_TYPE_FILE,
+		Extension: filepath.Ext(relativeSavePath),
+		Size:      uint64(form.File.Size),
+		ShareCode: shareCode,
+		UserID:    user.ID,
+	})
+	if resultNewFile.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	var files []model.File
+	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
+	if resultFiles.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"files": files,
+		},
+	})
+}
+
 func InitService(rg *gin.RouterGroup) {
 	api := rg.Group("/service")
 	{
 		api.GET("/download", download)
+		api.POST("/upload", upload)
 	}
 }
