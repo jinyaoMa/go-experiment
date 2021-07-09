@@ -3,6 +3,7 @@ package controller
 import (
 	"jinyaoma/go-experiment/config"
 	"jinyaoma/go-experiment/model"
+	"jinyaoma/go-experiment/workspace"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -454,10 +455,41 @@ func delete(c *gin.Context) {
 		return
 	}
 
+	var role model.Role
+	resultRole := model.GetDB().First(&role, user.RoleID)
+	if resultRole.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	var usedSpace uint64
+	resultUsedSpace := model.GetDB().Raw("select sum(size) from files where user_id = ? AND deleted_at IS NULL", user.ID).Scan(&usedSpace)
+	if resultUsedSpace.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	var allSpace uint64
+	disk := workspace.GetDisk()
+	disk.Update()
+	if role.Name == model.ROLE_ADMIN {
+		allSpace = disk.Available
+	} else if role.Space < disk.Available {
+		allSpace = role.Space
+	} else {
+		allSpace = disk.Available
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data": gin.H{
-			"files": files,
+			"files":     files,
+			"usedSpace": usedSpace,
+			"allSpace":  allSpace,
 		},
 	})
 }

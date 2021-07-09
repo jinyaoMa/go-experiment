@@ -69,7 +69,7 @@ func login(c *gin.Context) {
 	}
 
 	var usedSpace uint64
-	resultUsedSpace := model.GetDB().Raw("select sum(size) from files where user_id = ?", user.ID).Scan(&usedSpace)
+	resultUsedSpace := model.GetDB().Raw("select sum(size) from files where user_id = ? AND deleted_at IS NULL", user.ID).Scan(&usedSpace)
 	if resultUsedSpace.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,

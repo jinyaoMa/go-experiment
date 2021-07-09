@@ -25,6 +25,13 @@
         {{ $locale.common.download }}
       </button>
       <button
+        v-if="filesToDownload.length > 0 && $route.path == '/recycle'"
+        class="btn-new-folder isDelete"
+        @click="handleDeleteManyFiles"
+      >
+        {{ $locale.common.recycling }}
+      </button>
+      <button
         v-if="cutOptions.canPaste"
         class="btn-new-folder"
         @click="handlePaste"
@@ -118,6 +125,41 @@ export default {
     },
   },
   methods: {
+    handleDeleteManyFiles() {
+      this.$startLoading();
+      let errorStop = false;
+      this.filesToDownload.forEach(async (file, index) => {
+        if (!errorStop) {
+          await this.$http
+            .post("/api/files/delete", {
+              id: this.$user.id,
+              token: this.$user.token,
+              fileId: file.ID,
+            })
+            .then((res) => {
+              if (res.data.success) {
+                if (index + 1 === this.filesToDownload.length) {
+                  let data = res.data.data;
+                  this.$setUser({
+                    usedSpace: data.usedSpace,
+                    allSpace: data.allSpace,
+                  });
+                  this.$setFiles(data.files);
+                }
+              } else {
+                errorStop = true;
+                this.$showError(this.$locale.common.errorMsg);
+              }
+              this.$stopLoading();
+            })
+            .catch((err) => {
+              errorStop = true;
+              this.$showError(this.$locale.common.errorServer);
+              this.$stopLoading();
+            });
+        }
+      });
+    },
     handleDownloadManyFiles() {
       let triggerDelay = 100;
       let removeDelay = 1000;
@@ -290,5 +332,9 @@ input[type="file"] {
   height: 100%;
   opacity: 0;
   z-index: 1;
+}
+.isDelete {
+  background-color: #dd3333;
+  color: #ffffff;
 }
 </style>

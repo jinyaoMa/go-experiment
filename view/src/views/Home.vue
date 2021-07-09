@@ -243,6 +243,7 @@ export default {
       data.append("token", this.$user.token);
       data.append("desId", this.$getCurrentPathId());
       data.append("file", file);
+      this.$setProgress(0);
       this.$startProgressing();
       this.$http
         .post("/api/service/upload", data, {

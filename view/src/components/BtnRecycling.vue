@@ -15,6 +15,7 @@
   transition: 0.2s;
   opacity: 0.5;
   &:hover {
+    color: #dd3333;
     opacity: 1;
   }
 }
