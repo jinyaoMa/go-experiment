@@ -50,6 +50,17 @@ const routes = [
     }
   },
   {
+    path: "/share",
+    name: "Share",
+    component() {
+      return import(/* webpackChunkName: "share" */ "../views/Share.vue");
+    },
+    meta: {
+      spinAtCorner: false,
+      requireAuth: true
+    }
+  },
+  {
     path: "*",
     name: "Home",
     component() {

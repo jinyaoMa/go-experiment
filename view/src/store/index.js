@@ -131,6 +131,9 @@ Vue.mixin({
     $formatDate(date, fmtStr) {
       return moment(date).format(fmtStr);
     },
+    $isDateBefore(a, b) {
+      return moment(a).isBefore(b);
+    },
     $getCurrentPathId() {
       let currentPath = this.$route.query.currentPath;
       if (typeof currentPath === "string" && currentPath.length > 0) {
