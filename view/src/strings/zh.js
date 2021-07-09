@@ -29,6 +29,8 @@ export default {
     errorConfirmPassword: "再确认一下密码看看 (￣_,￣ )",
     errorServer: "你的好友“服务器”已下线",
     confirm: "好吧",
+    updateShare: "刷新",
+    cancelShare: "取消",
     loaded: {
       one: "已全部加载，共 ? 项",
       more: "已全部加载，共 ? 项"
@@ -96,5 +98,8 @@ export default {
       permission: "权限",
       space: "储存空间"
     }
+  },
+  share: {
+    expiredAt: "分享过期日期"
   }
 };

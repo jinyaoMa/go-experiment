@@ -335,9 +335,7 @@ export default {
   },
   computed: {
     filesToDownload() {
-      return this.currentUnsortedFiles.filter(
-        (file) => file.Type === "file" && file.isChecked
-      );
+      return this.currentUnsortedFiles.filter((file) => file.isChecked);
     },
     checkedItemsAmount() {
       return this.currentUnsortedFiles.filter((item) => item.isChecked).length;

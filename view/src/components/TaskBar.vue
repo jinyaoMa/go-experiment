@@ -32,6 +32,20 @@
         {{ $locale.common.recycling }}
       </button>
       <button
+        v-if="filesToDownload.length > 0 && $route.path == '/share'"
+        class="btn-upload"
+        @click="handleUpdateManyShares"
+      >
+        {{ $locale.common.updateShare }}
+      </button>
+      <button
+        v-if="filesToDownload.length > 0 && $route.path == '/share'"
+        class="btn-new-folder"
+        @click="handleCancelManyShares"
+      >
+        {{ $locale.common.cancelShare }}
+      </button>
+      <button
         v-if="cutOptions.canPaste"
         class="btn-new-folder"
         @click="handlePaste"
@@ -125,6 +139,8 @@ export default {
     },
   },
   methods: {
+    handleCancelManyShares() {},
+    handleUpdateManyShares() {},
     handleDeleteManyFiles() {
       this.$startLoading();
       let errorStop = false;

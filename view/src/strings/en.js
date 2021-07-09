@@ -29,6 +29,8 @@ export default {
     errorConfirmPassword: "Please check and confirm your password again!",
     errorServer: "Server Error! Error! Error!",
     confirm: "OK",
+    updateShare: "Update",
+    cancelShare: "Cancel",
     loaded: {
       one: "Total ? item loaded",
       more: "Total ? items loaded"
@@ -96,5 +98,8 @@ export default {
       permission: "Permission",
       space: "Space"
     }
+  },
+  share: {
+    expiredAt: "Share Expired At"
   }
 };

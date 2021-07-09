@@ -47,8 +47,8 @@
                 </template>
               </td>
               <td class="col-modified-at" @click="handleSortUpdatedAt">
-                {{ $locale.home.modifiedAt }}
-                <template v-if="sortBy === 'UpdatedAt'">
+                {{ $locale.share.expiredAt }}
+                <template v-if="sortBy === 'ShareExpiredAt'">
                   <i
                     v-if="sortOrder === 'DESC'"
                     class="fas fa-sort-amount-up"
@@ -197,7 +197,9 @@
               </td>
               <td v-if="file.Type === 'directory'">-</td>
               <td v-else>{{ $convertSpace2String(file.Size) }}</td>
-              <td>{{ $formatDate(file.UpdatedAt, "YYYY-MM-DD HH:mm") }}</td>
+              <td>
+                {{ $formatDate(file.ShareExpiredAt, "YYYY-MM-DD HH:mm") }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -424,10 +426,10 @@ export default {
       }
     },
     handleSortUpdatedAt() {
-      if (this.sortBy === "UpdatedAt") {
+      if (this.sortBy === "ShareExpiredAt") {
         this.sortOrder = this.sortOrder === "DESC" ? "ASC" : "DESC";
       } else {
-        this.sortBy = "UpdatedAt";
+        this.sortBy = "ShareExpiredAt";
         this.sortOrder = "DESC";
       }
     },
@@ -521,7 +523,7 @@ export default {
     return {
       isSelectAll: false,
       searchKeyword: "",
-      sortBy: "UpdatedAt",
+      sortBy: "ShareExpiredAt",
       sortOrder: "DESC",
       renameFileId: 0,
       renameFileName: "",
