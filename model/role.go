@@ -9,7 +9,6 @@ import (
 
 const (
 	ROLE_MEMBER = "member"
-	ROLE_VIP    = "vip"
 	ROLE_ADMIN  = "admin"
 )
 
@@ -28,15 +27,11 @@ func initDefaultRoles(db *gorm.DB) {
 	roles := []Role{
 		{
 			Name:       ROLE_ADMIN,
-			Permission: "CORE:1,SHARE:1,ADMIN:1",
-		}, {
-			Name:       ROLE_VIP,
-			Permission: "CORE:1,SHARE:1,ADMIN:0",
-			Space:      666 * 1024 * 1024,
+			Permission: "CORE:1,ADMIN:1",
 		}, {
 			Name:       ROLE_MEMBER,
-			Permission: "CORE:1,SHARE:0,ADMIN:0",
-			Space:      233 * 1024 * 1024,
+			Permission: "CORE:1,ADMIN:0",
+			Space:      8 * 1024 * 1024 * 1024,
 		},
 	}
 
