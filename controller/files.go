@@ -417,6 +417,14 @@ func delete(c *gin.Context) {
 		return
 	}
 
+	errDelete := os.RemoveAll(filepath.Join(config.WORKSPACE, user.Account, file.Path))
+	if errDelete != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
 	if file.Type == model.FILE_TYPE_DIRECTORY {
 		deletedFilePath := file.Path + "\\"
 		deletedFilePathLength := utf8.RuneCountInString(deletedFilePath)
