@@ -4,6 +4,7 @@ import (
 	"errors"
 	"jinyaoma/go-experiment/config"
 	"jinyaoma/go-experiment/model"
+	"jinyaoma/go-experiment/workspace"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -106,6 +107,31 @@ func upload(c *gin.Context) {
 		return
 	}
 
+	var role model.Role
+	resultRole := model.GetDB().First(&role, user.RoleID)
+	if resultRole.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	disk := workspace.GetDisk()
+	var roleSpace uint64
+	if role.Name == model.ROLE_ADMIN {
+		roleSpace = disk.Available
+	} else if role.Space < disk.Available {
+		roleSpace = role.Space
+	} else {
+		roleSpace = disk.Available
+	}
+	if uint64(form.File.Size) > roleSpace {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
 	var des model.File
 	resultDes := model.GetDB().Where("id = ? AND user_id = ?", form.DesId, user.ID).First(&des)
 	if resultDes.Error != nil || des.Type != model.FILE_TYPE_DIRECTORY {
@@ -162,10 +188,31 @@ func upload(c *gin.Context) {
 		return
 	}
 
+	var usedSpace uint64
+	resultUsedSpace := model.GetDB().Raw("select sum(size) from files where user_id = ?", user.ID).Scan(&usedSpace)
+	if resultUsedSpace.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	var allSpace uint64
+	disk.Update()
+	if role.Name == model.ROLE_ADMIN {
+		allSpace = disk.Available
+	} else if role.Space < disk.Available {
+		allSpace = role.Space
+	} else {
+		allSpace = disk.Available
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data": gin.H{
-			"files": files,
+			"files":     files,
+			"usedSpace": usedSpace,
+			"allSpace":  allSpace,
 		},
 	})
 }

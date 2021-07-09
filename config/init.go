@@ -6,9 +6,8 @@ import (
 )
 
 const (
-	WORKSPACE                 string = "D:/WORKSPACE"
-	WORKSPACE_AVAILABLE_SPACE uint64 = 32 * 1024 * 1024 * 1024 // 32 GB
-	WORKSPACE_CAN_INITIALIZE  bool   = true
+	WORKSPACE                string = "D:/WORKSPACE"
+	WORKSPACE_CAN_INITIALIZE bool   = true
 
 	SERVER_PORT string = ":3000"
 

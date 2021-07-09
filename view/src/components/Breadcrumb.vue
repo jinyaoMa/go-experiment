@@ -2,11 +2,7 @@
   <div class="breadcrumb">
     <div class="breadcrumb-start">
       <router-link
-        :to="{
-          query: {
-            currentPath: '',
-          },
-        }"
+        to="/"
         :class="{
           'router-link-exact-active': $route.fullPath === '/',
         }"

@@ -1,7 +1,7 @@
 <template>
   <div class="task-bar">
     <div class="start">
-      <div class="btn-upload">
+      <div class="btn-upload" v-if="$route.path == '/'">
         {{ $locale.common.upload }}
         <input
           type="file"
@@ -11,13 +11,17 @@
         />
       </div>
       <button
-        v-if="canNewFolder"
+        v-if="canNewFolder && $route.path == '/'"
         class="btn-new-folder"
         @click="$emit('newFolder')"
       >
         {{ $locale.common.newFolder }}
       </button>
-      <button v-if="filesToDownload.length > 0" class="btn-new-folder">
+      <button
+        v-if="filesToDownload.length > 0 && $route.path == '/'"
+        class="btn-new-folder"
+        @click="handleDownloadManyFiles"
+      >
         {{ $locale.common.download }}
       </button>
       <button
@@ -114,6 +118,27 @@ export default {
     },
   },
   methods: {
+    handleDownloadManyFiles() {
+      let triggerDelay = 100;
+      let removeDelay = 1000;
+      let createIFrame = (url, triggerDelay, removeDelay) => {
+        setTimeout(() => {
+          var frame = document.createElement("iframe");
+          frame.src = url;
+          frame.style.display = "none";
+          document.body.appendChild(frame);
+          setTimeout(() => {
+            frame.remove();
+          }, removeDelay);
+        }, triggerDelay);
+      };
+      let files = document.querySelectorAll(
+        "[download='file'][data-check='true']"
+      );
+      files.forEach((file, i) => {
+        createIFrame(file.href, i * triggerDelay, removeDelay);
+      });
+    },
     handleUploadClick() {
       let upload = this.$refs.upload;
       if (upload && upload.files.length === 1) {
@@ -191,6 +216,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
+  white-space: nowrap;
 }
 .btn-upload {
   font-weight: 500;

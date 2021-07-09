@@ -39,6 +39,17 @@ const routes = [
     }
   },
   {
+    path: "/recycle",
+    name: "Recycle",
+    component() {
+      return import(/* webpackChunkName: "recycle" */ "../views/Recycle.vue");
+    },
+    meta: {
+      spinAtCorner: false,
+      requireAuth: true
+    }
+  },
+  {
     path: "*",
     name: "Home",
     component() {

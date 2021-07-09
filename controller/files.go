@@ -23,7 +23,7 @@ func getFiles(c *gin.Context) {
 	user := GetAuthUser(c)
 
 	var files []model.File
-	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
+	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
 	if resultFiles.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -65,7 +65,7 @@ func renameFile(c *gin.Context) {
 	user := GetAuthUser(c)
 
 	var file model.File
-	resultFile := model.GetDB().Where("id = ? AND user_id = ?", form.FileId, user.ID).First(&file)
+	resultFile := model.GetDB().Where("id = ? AND user_id = ? AND recycled = 0", form.FileId, user.ID).First(&file)
 	if resultFile.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -129,7 +129,7 @@ func moveFile(c *gin.Context) {
 	user := GetAuthUser(c)
 
 	var des model.File
-	resultDes := model.GetDB().Where("id = ? AND user_id = ?", form.DesId, user.ID).First(&des)
+	resultDes := model.GetDB().Where("id = ? AND user_id = ? AND recycled = 0", form.DesId, user.ID).First(&des)
 	if resultDes.Error != nil || des.Type != model.FILE_TYPE_DIRECTORY {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -138,7 +138,7 @@ func moveFile(c *gin.Context) {
 	}
 
 	var src model.File
-	resultSrc := model.GetDB().Where("id = ? AND user_id = ?", form.SrcId, user.ID).First(&src)
+	resultSrc := model.GetDB().Where("id = ? AND user_id = ? AND recycled = 0", form.SrcId, user.ID).First(&src)
 	if resultSrc.Error != nil || src.Type != model.FILE_TYPE_FILE {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -174,7 +174,7 @@ func moveFile(c *gin.Context) {
 	}
 
 	var files []model.File
-	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
+	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
 	if resultFiles.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -209,7 +209,7 @@ func shareFile(c *gin.Context) {
 
 	shareCode := config.GenerateShareCode(4)
 	ShareExpiredAt := time.Now().AddDate(0, 1, 0)
-	resultUpdateShare := model.GetDB().Model(&model.File{}).Where("id = ? AND user_id = ?", form.FileId, user.ID).Updates(model.File{
+	resultUpdateShare := model.GetDB().Model(&model.File{}).Where("id = ? AND user_id = ? AND recycled = 0", form.FileId, user.ID).Updates(model.File{
 		ShareCode:      shareCode,
 		ShareExpiredAt: ShareExpiredAt,
 	})
@@ -221,7 +221,7 @@ func shareFile(c *gin.Context) {
 	}
 
 	var files []model.File
-	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
+	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
 	if resultFiles.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -266,7 +266,7 @@ func newFolder(c *gin.Context) {
 	user := GetAuthUser(c)
 
 	var des model.File
-	resultDes := model.GetDB().Where("id = ? AND user_id = ?", form.DesId, user.ID).First(&des)
+	resultDes := model.GetDB().Where("id = ? AND user_id = ? AND recycled = 0", form.DesId, user.ID).First(&des)
 	if resultDes.Error != nil || des.Type != model.FILE_TYPE_DIRECTORY {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -312,7 +312,7 @@ func newFolder(c *gin.Context) {
 	}
 
 	var files []model.File
-	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
+	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
 	if resultFiles.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -346,7 +346,7 @@ func recycle(c *gin.Context) {
 	user := GetAuthUser(c)
 
 	var file model.File
-	resultFile := model.GetDB().Where("id = ? AND user_id = ?", form.FileId, user.ID).First(&file)
+	resultFile := model.GetDB().Where("id = ? AND user_id = ? AND recycled = 0", form.FileId, user.ID).First(&file)
 	if resultFile.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,
@@ -379,7 +379,7 @@ func recycle(c *gin.Context) {
 	}
 
 	var files []model.File
-	resultFiles := model.GetDB().Find(&files, "user_id = ? AND recycled = 0", user.ID)
+	resultFiles := model.GetDB().Find(&files, "user_id = ?", user.ID)
 	if resultFiles.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": http.StatusInternalServerError,

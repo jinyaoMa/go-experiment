@@ -177,20 +177,6 @@
                     </div>
                   </div>
                   <div class="col-filename-end">
-                    <BtnDownloadFile
-                      v-if="file.Type === 'file'"
-                      :data-check="file.isChecked"
-                      :url="getFileDownloadLink(file)"
-                    />
-                    <BtnSharing
-                      v-if="file.Type === 'file'"
-                      @click="handleSharingClick(file)"
-                    />
-                    <BtnCut
-                      v-if="file.Type === 'file'"
-                      @click="handleCutClick(file)"
-                    />
-                    <BtnRename @click="handleRenameClick(file)" />
                     <BtnRecycling @click="handleRecyclingClick(file)" />
                   </div>
                 </div>
@@ -211,10 +197,6 @@ import Layout from "../components/Layout.vue";
 import TaskBar from "../components/TaskBar.vue";
 import CheckSquare from "../components/CheckSquare.vue";
 import Breadcrumb from "../components/Breadcrumb.vue";
-import BtnDownloadFile from "../components/BtnDownloadFile.vue";
-import BtnRename from "../components/BtnRename.vue";
-import BtnCut from "../components/BtnCut.vue";
-import BtnSharing from "../components/BtnSharing.vue";
 import BtnRecycling from "../components/BtnRecycling.vue";
 
 export default {
@@ -223,10 +205,6 @@ export default {
     TaskBar,
     CheckSquare,
     Breadcrumb,
-    BtnDownloadFile,
-    BtnRename,
-    BtnCut,
-    BtnSharing,
     BtnRecycling,
   },
   watch: {
@@ -262,12 +240,7 @@ export default {
         })
         .then((res) => {
           if (res.data.success) {
-            let data = res.data.data;
-            this.$setUser({
-              usedSpace: data.usedSpace,
-              allSpace: data.allSpace,
-            });
-            this.$setFiles(data.files);
+            this.$setFiles(res.data.data.files);
           } else {
             this.$showError(this.$locale.common.errorMsg);
           }
@@ -326,35 +299,6 @@ export default {
       this.newFolderName = this.$locale.common.newFolder;
       this.showNewFolderForm = true;
     },
-    handleSharingClick(file) {
-      this.$startLoading();
-      this.$http
-        .post("/api/files/shareFile", {
-          id: this.$user.id,
-          token: this.$user.token,
-          fileId: file.ID,
-        })
-        .then((res) => {
-          if (res.data.success) {
-            let data = res.data.data;
-            let shareLink = `${this.$http.defaults.baseURL}/api/service/download?c=${data.c}&d=${data.d}&e=${data.e}`;
-            this.$setFiles(data.files);
-            this.$showShareNotice(shareLink);
-          } else {
-            this.$showError(this.$locale.common.errorMsg);
-          }
-          this.$stopLoading();
-        })
-        .catch((err) => {
-          this.$showError(this.$locale.common.errorServer);
-          this.$stopLoading();
-        });
-    },
-    handleCutClick(file) {
-      this.cutOptions.srcId = file.ID;
-      this.cutOptions.srcPath = file.Path;
-      this.cutOptions.canPaste = true;
-    },
     handleRenameFile(file) {
       this.$startLoading();
       this.$http
@@ -379,20 +323,6 @@ export default {
           this.$showError(this.$locale.common.errorServer);
           this.$stopLoading();
         });
-    },
-    handleRenameClick(file) {
-      this.currentFiles.forEach((f) => {
-        f.canRename = false;
-      });
-      file.canRename = true;
-      this.renameFileId = file.ID;
-      this.renameFileName = file.Name;
-    },
-    getFileDownloadLink(file) {
-      let i = this.$user.usedSpace % 64;
-      return `${this.$http.defaults.baseURL}/api/service/download?a=${
-        i + 1
-      }&b=${this.$user.token.substr(i)}&c=${file.ShareCode}&d=${file.ID}`;
     },
     handleAllCheck(_, checked) {
       if (!checked) {
@@ -497,7 +427,7 @@ export default {
             let find = file.Path.match(/\\/g);
             let temp = find ? find.length : 0;
             if (
-              file.Recycled === 0 &&
+              file.Recycled === 1 &&
               file.Path.startsWith(currentPath) &&
               file.Path.replace(currentPath, "").includes(this.searchKeyword) &&
               temp > depth
@@ -512,7 +442,7 @@ export default {
           let find = file.Path.match(/\\/g);
           let temp = find ? find.length : 0;
           if (
-            file.Recycled === 0 &&
+            file.Recycled === 1 &&
             file.Path.startsWith(currentPath) &&
             temp === depth + 1
           ) {
@@ -525,7 +455,7 @@ export default {
       // search root folder
       if (this.searchKeyword.length > 0) {
         return this.$files.filter((file) => {
-          if (file.Path === "." || file.Recycled === 1) {
+          if (file.Path === "." || file.Recycled === 0) {
             return false;
           }
           if (file.Path.includes(this.searchKeyword)) {
@@ -538,7 +468,7 @@ export default {
       return this.$files.filter((file) => {
         if (
           file.Path === "." ||
-          file.Recycled === 1 ||
+          file.Recycled === 0 ||
           file.Path.includes("\\")
         ) {
           return false;
