@@ -2,6 +2,7 @@ package workspace
 
 import (
 	"errors"
+	"jinyaoma/go-experiment/config"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -52,6 +53,9 @@ func InitDisk(drive string) (Disk, error) {
 		uintptr(unsafe.Pointer(&disk.Available)))
 	disk.drive = p
 	disk.Used = disk.All - disk.Free
+	if config.WORKSPACE_AVAILABLE_SPACE < disk.Available {
+		disk.Available = config.WORKSPACE_AVAILABLE_SPACE
+	}
 	return disk, nil
 }
 
@@ -61,4 +65,7 @@ func (disk *Disk) Update() {
 		uintptr(unsafe.Pointer(&disk.All)),
 		uintptr(unsafe.Pointer(&disk.Available)))
 	disk.Used = disk.All - disk.Free
+	if config.WORKSPACE_AVAILABLE_SPACE < disk.Available {
+		disk.Available = config.WORKSPACE_AVAILABLE_SPACE
+	}
 }
