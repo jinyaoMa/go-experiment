@@ -15,6 +15,7 @@
             :placeholder="$locale.settings.basic.usernamePlaceholder"
             v-model="options.username"
             @keyup.enter="handleSubmit"
+            autocomplete="off"
           />
           <div v-if="options.username" class="clean-input">
             <i class="fas fa-times" @click="options.username = ''"></i>

@@ -97,6 +97,12 @@ export default {
       name: "Role Name",
       permission: "Permission",
       space: "Space"
+    },
+    userManagement: {
+      title: "User Management",
+      account: "Account",
+      password: "Password",
+      role: "Role"
     }
   },
   share: {

@@ -4,6 +4,11 @@
     <div class="main">
       <Basic :options="options" />
       <div v-if="$user.permission.includes('ADMIN:1')" class="divider" />
+      <UserManagement
+        v-if="$user.permission.includes('ADMIN:1')"
+        :options="options"
+      />
+      <div v-if="$user.permission.includes('ADMIN:1')" class="divider" />
       <RoleManagement
         v-if="$user.permission.includes('ADMIN:1')"
         :options="options"
@@ -19,6 +24,7 @@ import Head from "../components/Head.vue";
 import Basic from "../components/SettingsForm/Basic.vue";
 import RoleManagement from "../components/SettingsForm/RoleManagement.vue";
 import ResetPassword from "../components/SettingsForm/ResetPassword.vue";
+import UserManagement from "../components/SettingsForm/UserManagement.vue";
 
 export default {
   components: {
@@ -26,6 +32,7 @@ export default {
     Basic,
     RoleManagement,
     ResetPassword,
+    UserManagement,
   },
   data() {
     return {

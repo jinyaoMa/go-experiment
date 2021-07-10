@@ -62,11 +62,21 @@ func settings(c *gin.Context) {
 			return
 		}
 
+		var users []model.User
+		resultUsers := model.GetDB().Order("id desc").Find(&users)
+		if resultUsers.Error != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"error": http.StatusInternalServerError,
+			})
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
 			"data": gin.H{
 				"userLimit": config.User_Limit,
 				"roles":     roles,
+				"users":     users,
 			},
 		})
 		return
@@ -78,6 +88,7 @@ func settings(c *gin.Context) {
 			"username":  user.Name,
 			"userLimit": 0,
 			"roles":     make([]model.Role, 0),
+			"users":     make([]model.User, 0),
 		},
 	})
 }
@@ -294,6 +305,59 @@ func saveRole(c *gin.Context) {
 	})
 }
 
+type SaveUserForm struct {
+	UserID   uint   `form:"userId" binding:"required"`
+	RoleID   uint   `form:"roleId" binding:"required"`
+	Password string `form:"password" binding:"required"`
+}
+
+func saveUser(c *gin.Context) {
+	isAdmin := GetIsAdmin(c)
+	if !isAdmin {
+		c.JSON(http.StatusOK, gin.H{
+			"fail": CONTROLLER_ADMIN_ERROR_UNAUTHORIZED,
+		})
+		return
+	}
+
+	var form SaveUserForm
+	err := c.ShouldBindWith(&form, binding.FormPost)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error":  CONTROLLER_ADMIN_ERROR_BIND,
+			"isFail": true,
+		})
+		return
+	}
+
+	resultUpdateUser := model.GetDB().Model(&model.User{}).Where("id = ?", form.UserID).Updates(model.User{
+		RoleID:   form.RoleID,
+		Password: form.Password,
+	})
+	if resultUpdateUser.RowsAffected != 1 {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	var users []model.User
+	resultUsers := model.GetDB().Order("id desc").Find(&users)
+	if resultUsers.Error != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": http.StatusInternalServerError,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"users": users,
+		},
+	})
+}
+
 func InitAdmin(rg *gin.RouterGroup) {
 	api := rg.Group("/admin").Use(Auth(), Admin())
 	{
@@ -302,5 +366,6 @@ func InitAdmin(rg *gin.RouterGroup) {
 		api.POST("/resetPassword", resetPassword)
 		api.POST("/role/add", addRole)
 		api.POST("/role/save", saveRole)
+		api.POST("/user/save", saveUser)
 	}
 }

@@ -97,6 +97,12 @@ export default {
       name: "角色名",
       permission: "权限",
       space: "储存空间"
+    },
+    userManagement: {
+      title: "用户管理",
+      account: "帐号",
+      password: "密码",
+      role: "角色"
     }
   },
   share: {

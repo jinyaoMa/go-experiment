@@ -12,10 +12,6 @@
           <i class="fas fa-fw" />
           {{ $locale.common.pictures }}
         </router-link>
-        <router-link to="/documents" exact-path>
-          <i class="fas fa-fw" />
-          {{ $locale.common.documents }}
-        </router-link>
         <router-link to="/videos" exact-path>
           <i class="fas fa-fw" />
           {{ $locale.common.videos }}
@@ -78,7 +74,7 @@ export default {
   padding-bottom: 5em;
   > a {
     padding: 0 1.8em;
-    line-height: 3em;
+    line-height: 3.33em;
     text-decoration: none;
     color: #333333;
     transition: 0.2s;

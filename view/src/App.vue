@@ -40,7 +40,7 @@ export default {
 <style lang="scss">
 body {
   margin: 0;
-  min-width: 100vw;
+  min-width: 100%;
   width: fit-content;
 }
 #app {
