@@ -61,6 +61,17 @@ const routes = [
     }
   },
   {
+    path: "/:cat",
+    name: "Cat",
+    component() {
+      return import(/* webpackChunkName: "cat" */ "../views/Cat.vue");
+    },
+    meta: {
+      spinAtCorner: false,
+      requireAuth: true
+    }
+  },
+  {
     path: "*",
     name: "Home",
     component() {

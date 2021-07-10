@@ -18,20 +18,6 @@
         {{ $locale.common.newFolder }}
       </button>
       <button
-        v-if="filesToDownload.length > 0 && $route.path == '/'"
-        class="btn-new-folder"
-        @click="handleDownloadManyFiles"
-      >
-        {{ $locale.common.download }}
-      </button>
-      <button
-        v-if="filesToDownload.length > 0 && $route.path == '/recycle'"
-        class="btn-new-folder isDelete"
-        @click="handleDeleteManyFiles"
-      >
-        {{ $locale.common.recycling }}
-      </button>
-      <button
         v-if="filesToDownload.length > 0 && $route.path == '/share'"
         class="btn-upload"
         @click="handleUpdateManyShares"
@@ -44,6 +30,20 @@
         @click="handleCancelManyShares"
       >
         {{ $locale.common.cancelShare }}
+      </button>
+      <button
+        v-if="filesToDownload.length > 0 && $route.path != '/recycle'"
+        class="btn-new-folder"
+        @click="handleDownloadManyFiles"
+      >
+        {{ $locale.common.download }}
+      </button>
+      <button
+        v-if="filesToDownload.length > 0 && $route.path == '/recycle'"
+        class="btn-new-folder isDelete"
+        @click="handleDeleteManyFiles"
+      >
+        {{ $locale.common.recycling }}
       </button>
       <button
         v-if="cutOptions.canPaste"

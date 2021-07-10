@@ -146,7 +146,7 @@
                       >
                         <i class="fas fa-folder fa-fw" />
                         {{ file.Name }}
-                        <span class="hint" v-if="searchKeyword">
+                        <span class="hint">
                           {{ file.Path }}
                         </span>
                       </router-link>
@@ -171,7 +171,7 @@
                     <div v-else>
                       <i class="fas fa-file fa-fw" />
                       {{ file.Name }}
-                      <span class="hint" v-if="searchKeyword">
+                      <span class="hint">
                         {{ file.Path }}
                       </span>
                     </div>
@@ -440,6 +440,28 @@ export default {
       this.searchKeyword = keyword;
       complete();
     },
+    checkFileExt(file) {
+      let cat = this.$route.params.cat;
+      let isPicture = /^\.(jpg|jpeg|git|png|bmp|webp|tif|svg)$/.test(
+        file.Extension
+      );
+      let isVideo = /^\.(wmv|rm|rmvb|mp4|3gp|mov|m4v|avi|mkv|flv|dat)$/.test(
+        file.Extension
+      );
+      let isMusic = /^\.(cda|wav|mp3|wma|ra|midi|aif|aiff|vqf|ape|flac)$/.test(
+        file.Extension
+      );
+      switch (cat) {
+        case "picture":
+          return isPicture;
+        case "videos":
+          return isVideo;
+        case "music":
+          return isMusic;
+        default:
+          return !(isPicture || isVideo || isMusic);
+      }
+    },
   },
   computed: {
     filesToDownload() {
@@ -488,48 +510,16 @@ export default {
       });
     },
     currentUnsortedFiles() {
-      let currentPath = this.$route.query.currentPath;
-      if (typeof currentPath === "string" && currentPath.length > 0) {
-        let matches = currentPath.match(/\\/g);
-        let depth = matches ? matches.length : 0;
-        // search current folder
-        if (this.searchKeyword.length > 0) {
-          return this.$files.filter((file) => {
-            let find = file.Path.match(/\\/g);
-            let temp = find ? find.length : 0;
-            if (
-              file.Recycled === 0 &&
-              file.Path.startsWith(currentPath) &&
-              file.Path.replace(currentPath, "").includes(this.searchKeyword) &&
-              temp > depth
-            ) {
-              return true;
-            }
-            return false;
-          });
-        }
-        // current folder
-        return this.$files.filter((file) => {
-          let find = file.Path.match(/\\/g);
-          let temp = find ? find.length : 0;
-          if (
-            file.Recycled === 0 &&
-            file.Path.startsWith(currentPath) &&
-            temp === depth + 1
-          ) {
-            return true;
-          }
-          return false;
-        });
-      }
-
       // search root folder
       if (this.searchKeyword.length > 0) {
         return this.$files.filter((file) => {
-          if (file.Path === "." || file.Recycled === 1) {
+          if (file.Recycled === 1 || file.Type === "directory") {
             return false;
           }
-          if (file.Path.includes(this.searchKeyword)) {
+          if (
+            file.Path.includes(this.searchKeyword) &&
+            this.checkFileExt(file)
+          ) {
             return true;
           }
           return false;
@@ -537,14 +527,13 @@ export default {
       }
       // root
       return this.$files.filter((file) => {
-        if (
-          file.Path === "." ||
-          file.Recycled === 1 ||
-          file.Path.includes("\\")
-        ) {
+        if (file.Recycled === 1 || file.Type === "directory") {
           return false;
         }
-        return true;
+        if (this.checkFileExt(file)) {
+          return true;
+        }
+        return false;
       });
     },
   },
