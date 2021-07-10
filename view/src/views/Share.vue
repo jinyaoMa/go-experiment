@@ -184,14 +184,13 @@
                     />
                     <BtnSharing
                       v-if="file.Type === 'file'"
+                      :forUpdate="$route.path === '/share'"
                       @click="handleSharingClick(file)"
                     />
-                    <BtnCut
-                      v-if="file.Type === 'file'"
-                      @click="handleCutClick(file)"
+                    <BtnRecycling
+                      :forCancelShare="$route.path === '/share'"
+                      @click="handleRecyclingClick(file)"
                     />
-                    <BtnRename @click="handleRenameClick(file)" />
-                    <BtnRecycling @click="handleRecyclingClick(file)" />
                   </div>
                 </div>
               </td>
@@ -214,8 +213,6 @@ import TaskBar from "../components/TaskBar.vue";
 import CheckSquare from "../components/CheckSquare.vue";
 import Breadcrumb from "../components/Breadcrumb.vue";
 import BtnDownloadFile from "../components/BtnDownloadFile.vue";
-import BtnRename from "../components/BtnRename.vue";
-import BtnCut from "../components/BtnCut.vue";
 import BtnSharing from "../components/BtnSharing.vue";
 import BtnRecycling from "../components/BtnRecycling.vue";
 
@@ -226,8 +223,6 @@ export default {
     CheckSquare,
     Breadcrumb,
     BtnDownloadFile,
-    BtnRename,
-    BtnCut,
     BtnSharing,
     BtnRecycling,
   },
@@ -284,14 +279,16 @@ export default {
     handleRecyclingClick(file) {
       this.$startLoading();
       this.$http
-        .post("/api/files/recycle", {
+        .post("/api/files/shareFile", {
           id: this.$user.id,
           token: this.$user.token,
           fileId: file.ID,
+          cancel: true,
         })
         .then((res) => {
           if (res.data.success) {
-            this.$setFiles(res.data.data.files);
+            let data = res.data.data;
+            this.$setFiles(data.files);
           } else {
             this.$showError(this.$locale.common.errorMsg);
           }
@@ -353,11 +350,6 @@ export default {
           this.$stopLoading();
         });
     },
-    handleCutClick(file) {
-      this.cutOptions.srcId = file.ID;
-      this.cutOptions.srcPath = file.Path;
-      this.cutOptions.canPaste = true;
-    },
     handleRenameFile(file) {
       this.$startLoading();
       this.$http
@@ -382,14 +374,6 @@ export default {
           this.$showError(this.$locale.common.errorServer);
           this.$stopLoading();
         });
-    },
-    handleRenameClick(file) {
-      this.currentFiles.forEach((f) => {
-        f.canRename = false;
-      });
-      file.canRename = true;
-      this.renameFileId = file.ID;
-      this.renameFileName = file.Name;
     },
     getFileDownloadLink(file) {
       let i = this.$user.usedSpace % 64;

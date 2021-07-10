@@ -1,7 +1,7 @@
 <template>
   <span class="btn-sharing" :title="customTitle" @click="$emit('click')">
     <i v-if="forUpdate" class="fas fa-sync-alt fa-fw" />
-    <i class="fas fa-share-alt fa-fw" />
+    <i v-else class="fas fa-share-alt fa-fw" />
   </span>
 </template>
 
@@ -18,8 +18,8 @@ export default {
   computed: {
     customTitle() {
       return this.forUpdate
-        ? $locale.common.updateShare
-        : $locale.common.sharing;
+        ? this.$locale.common.updateShare
+        : this.$locale.common.sharing;
     },
   },
 };

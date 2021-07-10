@@ -40,7 +40,7 @@
       </button>
       <button
         v-if="filesToDownload.length > 0 && $route.path == '/share'"
-        class="btn-new-folder"
+        class="btn-new-folder isDelete"
         @click="handleCancelManyShares"
       >
         {{ $locale.common.cancelShare }}
@@ -139,8 +139,69 @@ export default {
     },
   },
   methods: {
-    handleCancelManyShares() {},
-    handleUpdateManyShares() {},
+    handleCancelManyShares() {
+      this.$startLoading();
+      let errorStop = false;
+      this.filesToDownload.forEach(async (file, index) => {
+        if (!errorStop) {
+          await this.$http
+            .post("/api/files/shareFile", {
+              id: this.$user.id,
+              token: this.$user.token,
+              fileId: file.ID,
+              cancel: true,
+            })
+            .then((res) => {
+              if (res.data.success) {
+                if (index + 1 === this.filesToDownload.length) {
+                  let data = res.data.data;
+                  this.$setFiles(data.files);
+                }
+              } else {
+                errorStop = true;
+                this.$showError(this.$locale.common.errorMsg);
+              }
+              this.$stopLoading();
+            })
+            .catch((err) => {
+              errorStop = true;
+              this.$showError(this.$locale.common.errorServer);
+              this.$stopLoading();
+            });
+        }
+      });
+    },
+    handleUpdateManyShares() {
+      this.$startLoading();
+      let errorStop = false;
+      this.filesToDownload.forEach(async (file, index) => {
+        if (!errorStop) {
+          await this.$http
+            .post("/api/files/shareFile", {
+              id: this.$user.id,
+              token: this.$user.token,
+              fileId: file.ID,
+            })
+            .then((res) => {
+              if (res.data.success) {
+                if (index + 1 === this.filesToDownload.length) {
+                  let data = res.data.data;
+                  this.$setFiles(data.files);
+                }
+              } else {
+                errorStop = true;
+                this.$showError(this.$locale.common.errorMsg);
+              }
+              this.$stopLoading();
+            })
+            .catch((err) => {
+              errorStop = true;
+              this.$showError(this.$locale.common.errorServer);
+              this.$stopLoading();
+            });
+        }
+      });
+    },
     handleDeleteManyFiles() {
       this.$startLoading();
       let errorStop = false;

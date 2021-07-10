@@ -192,7 +192,8 @@ func moveFile(c *gin.Context) {
 }
 
 type ShareFileForm struct {
-	FileId uint `form:"fileId" binding:"required"`
+	FileId   uint `form:"fileId" binding:"required"`
+	IsCancel bool `form:"cancel"`
 }
 
 func shareFile(c *gin.Context) {
@@ -208,8 +209,13 @@ func shareFile(c *gin.Context) {
 
 	user := GetAuthUser(c)
 
+	var ShareExpiredAt time.Time
+	if form.IsCancel {
+		ShareExpiredAt = time.Now().AddDate(0, 0, -1)
+	} else {
+		ShareExpiredAt = time.Now().AddDate(0, 1, 0)
+	}
 	shareCode := config.GenerateShareCode(4)
-	ShareExpiredAt := time.Now().AddDate(0, 1, 0)
 	resultUpdateShare := model.GetDB().Model(&model.File{}).Where("id = ? AND user_id = ? AND recycled = 0", form.FileId, user.ID).Updates(model.File{
 		ShareCode:      shareCode,
 		ShareExpiredAt: ShareExpiredAt,
