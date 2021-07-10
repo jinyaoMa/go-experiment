@@ -146,7 +146,7 @@
                       >
                         <i class="fas fa-folder fa-fw" />
                         {{ file.Name }}
-                        <span class="hint" v-if="searchKeyword">
+                        <span class="hint">
                           {{ file.Path }}
                         </span>
                       </router-link>
@@ -171,7 +171,7 @@
                     <div v-else>
                       <i class="fas fa-file fa-fw" />
                       {{ file.Name }}
-                      <span class="hint" v-if="searchKeyword">
+                      <span class="hint">
                         {{ file.Path }}
                       </span>
                     </div>
