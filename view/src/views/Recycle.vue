@@ -224,7 +224,12 @@ export default {
         })
         .then((res) => {
           if (res.data.success) {
-            this.$setFiles(res.data.data.files);
+            let data = res.data.data;
+            this.$setUser({
+              usedSpace: data.usedSpace,
+              allSpace: data.allSpace,
+            });
+            this.$setFiles(data.files);
           } else {
             this.$showError(this.$locale.common.errorMsg);
           }
