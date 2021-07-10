@@ -10,3 +10,10 @@
 - [https://fontawesome.com/](https://fontawesome.com/)
 - [https://vuejs.org/](https://vuejs.org/)
 
+## Preview
+
+![preview](./screenshots/preview.png)
+
+![preview1](./screenshots/preview1.png)
+
+![preview2](./screenshots/preview2.png)
