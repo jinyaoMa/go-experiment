@@ -32,13 +32,14 @@ export default {
     confirm: "好吧",
     updateShare: "刷新",
     cancelShare: "取消",
+    loadMore: "加载更多",
     loaded: {
-      one: "已全部加载，共 ? 项",
-      more: "已全部加载，共 ? 项"
+      one: "已加载，共 ? 项",
+      more: "已加载，共 ? 项"
     },
     searchCompleted: {
-      one: "已完成搜索，共 ? 项",
-      more: "已完成搜索，共 ? 项"
+      one: "已搜索，共 ? 项",
+      more: "已搜索，共 ? 项"
     },
     selected: {
       one: "已选中 ? 个文件/文件夹",

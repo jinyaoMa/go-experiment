@@ -44,9 +44,16 @@
           {{ file.Name }}
         </router-link>
         <div v-else class="list-item-text">
-          <img v-if="isImage(file)" :src="getImgLink(file)" preview="0" />
-          <i v-else class="fas fa-file fa-fw" />
-          {{ file.Name }}
+          <img
+            v-if="isImage(file)"
+            :src="getImgLink(file)"
+            preview="0"
+            @click="$previewRefresh()"
+          />
+          <div v-else>
+            <i class="fas fa-file fa-fw" />
+            {{ file.Name }}
+          </div>
         </div>
       </div>
     </div>
@@ -102,6 +109,9 @@ export default {
         ...this.currentSortedFiles.filter((file) => file.Type === "file"),
       ];
     },
+    currentImageCount() {
+      return this.currentSortedFiles.filter((f) => f.Type === "file").length;
+    },
     currentSortedFiles() {
       let currentPath = this.$route.query.currentPath;
       if (typeof currentPath === "string" && currentPath.length > 0) {
@@ -131,7 +141,7 @@ export default {
         if (file.Type === "directory") {
           return true;
         }
-        return /^\.(jpg|jpeg|git|png|bmp|webp|tif|svg)$/.test(file.Extension);
+        return /^\.(jpg|jpeg|gif|png|bmp|webp|tif|svg)$/.test(file.Extension);
       });
     },
   },
@@ -153,7 +163,6 @@ export default {
 .mini {
   display: flex;
   flex-direction: column;
-  padding: 10px;
   box-sizing: border-box;
   width: 100vw;
   font-size: 14px;
@@ -184,45 +193,35 @@ export default {
 .list {
   padding: 0.5em 0;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
 }
 .list-item {
-  width: 33%;
-  max-width: 10em;
-  padding: 1em 0.5em;
   box-sizing: border-box;
   line-height: 2;
 }
 .list-item-link,
 .list-item-text {
-  padding: 0 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: center;
   &:active {
     background-color: #fafbfc;
   }
   > i {
-    display: block;
-    width: 100%;
-    font-size: 4em;
-    line-height: 1.5;
+    margin: 0 10px;
   }
 }
 .list-item-link {
   display: block;
   text-decoration: none;
   color: #2196f3;
+  padding: 10px;
 }
 .list-item-text {
   > img {
     display: block;
     margin-right: 0.5em;
     width: 100%;
-    height: 6em;
     object-fit: contain;
     object-position: center;
   }

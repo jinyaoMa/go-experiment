@@ -7,10 +7,10 @@ import (
 
 const (
 	WORKSPACE                 string = "E:/"
-	WORKSPACE_AVAILABLE_SPACE uint64 = 280 * 1024 * 1024 * 1024 // 32 GB
+	WORKSPACE_AVAILABLE_SPACE uint64 = 280 * 1024 * 1024 * 1024 // 280 GB
 	WORKSPACE_CAN_INITIALIZE  bool   = true
 
-	SERVER_PORT string = ":3000"
+	SERVER_PORT string = ":55699"
 
 	DEFAULT_SIGNUP_ROLE_NAME string = "member"
 

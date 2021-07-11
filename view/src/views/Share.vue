@@ -200,6 +200,11 @@
                 {{ $formatDate(file.ShareExpiredAt, "YYYY-MM-DD HH:mm") }}
               </td>
             </tr>
+            <tr v-if="offset < currentSortedFiles.length">
+              <td colspan="4" class="more" @click="offset += 10">
+                {{ $locale.common.loadMore }}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -418,6 +423,7 @@ export default {
       }
     },
     handleClearOpts() {
+      this.offset = 10;
       this.searchKeyword = "";
       this.$refs.taskBar.clearSearchKeyword();
       this.$clearChecklist();
@@ -451,7 +457,7 @@ export default {
       return [
         ...this.currentSortedFiles.filter((file) => file.Type === "directory"),
         ...this.currentSortedFiles.filter((file) => file.Type === "file"),
-      ];
+      ].slice(0, this.offset);
     },
     currentSortedFiles() {
       if (this.sortOrder === "DESC") {
@@ -505,6 +511,7 @@ export default {
   },
   data() {
     return {
+      offset: 10,
       isSelectAll: false,
       searchKeyword: "",
       sortBy: "ShareExpiredAt",
@@ -674,5 +681,10 @@ table {
   .fa-times:hover {
     color: #dd3333;
   }
+}
+.more {
+  text-align: center;
+  color: #2196f3;
+  cursor: pointer;
 }
 </style>

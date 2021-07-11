@@ -50,13 +50,13 @@
       </div>
     </div>
     <div v-if="canPlay" class="video-section">
+      <i class="fas fa-times video-close" @click="handleClose" />
       <video-player
         ref="videoPlayer"
         :options="playerOptions"
         @ended="onPlayerEnded($event)"
       >
       </video-player>
-      <i class="fas fa-times video-close" @click="handleClose" />
     </div>
   </div>
 </template>
@@ -115,7 +115,7 @@ export default {
         case ".flv":
           return "flv";
         case ".mkv":
-          return "video/x-matroska";
+          return "video/webm";
         case ".mov":
           return "video/quicktime";
         case ".swf":
@@ -133,19 +133,17 @@ export default {
       ) {
         return {};
       }
+      let targetFile = this.currentFiles[this.currentSource];
+      let link = this.getVideoLink(targetFile);
+      let mime = this.getMime(targetFile.Extension.toLowerCase());
       return {
-        // videojs options
-        autoplay: "muted",
         language: this.$locale.LANG,
-        playbackRates: [0.7, 1.0, 1.5, 2.0],
         sources: [
           {
-            src: this.getVideoLink(this.currentFiles[this.currentSource]),
+            type: mime,
+            src: link,
           },
         ],
-        fluid: true,
-        controls: true,
-        preferFullWindow: true,
       };
     },
     player() {
@@ -219,10 +217,10 @@ export default {
 .mini {
   display: flex;
   flex-direction: column;
-  padding: 10px;
   box-sizing: border-box;
   width: 100vw;
   font-size: 14px;
+  position: relative;
 }
 .secret {
   border: 0;
@@ -250,31 +248,23 @@ export default {
 .list {
   padding: 0.5em 0;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 .list-item {
-  width: 33%;
-  max-width: 10em;
-  padding: 1em 0.5em;
   box-sizing: border-box;
   line-height: 2;
 }
 .list-item-link,
 .list-item-text {
-  padding: 0 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: center;
+  padding: 10px;
   &:active {
     background-color: #fafbfc;
   }
-  > i {
-    display: block;
-    width: 100%;
-    font-size: 4em;
-    line-height: 1.5;
+  i {
+    margin: 0 10px;
   }
 }
 .list-item-link {
@@ -293,26 +283,24 @@ export default {
   }
 }
 .video-section {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   background-color: #000000;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 .video-close {
   color: #ffffff;
   text-shadow: 0 0 2px #000000;
-  font-size: 1.3em;
-  line-height: 2em;
-  height: 2em;
-  width: 2em;
-  text-align: center;
-  position: absolute;
-  top: 0;
-  right: 0;
+  font-size: 2em;
+  line-height: 3;
+  height: 3em;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: right;
+  padding-right: 1em;
 }
 </style>

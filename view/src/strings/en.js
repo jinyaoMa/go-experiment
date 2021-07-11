@@ -32,17 +32,18 @@ export default {
     confirm: "OK",
     updateShare: "Update",
     cancelShare: "Cancel",
+    loadMore: "load more",
     loaded: {
-      one: "Total ? item loaded",
-      more: "Total ? items loaded"
+      one: "? item loaded",
+      more: "? items loaded"
     },
     searchCompleted: {
-      one: "Total ? item found",
-      more: "Total ? items found"
+      one: "? item found",
+      more: "? items found"
     },
     selected: {
-      one: "Total ? file/folder selected",
-      more: "Total ? files/folders selected",
+      one: "? file/folder selected",
+      more: "? files/folders selected",
       all: "All selected, total ? files/folders"
     }
   },

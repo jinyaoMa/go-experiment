@@ -98,5 +98,7 @@ func RunRouter() {
 		}
 	}
 
+	router.Static("/go-experiment", "./view/dist")
+
 	router.Run(config.SERVER_PORT)
 }
