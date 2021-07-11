@@ -13,6 +13,8 @@ const (
 	SERVER_PORT string = ":3000"
 
 	DEFAULT_SIGNUP_ROLE_NAME string = "member"
+
+	PASSWORD_DERECT_ACCESS_TO_ADMIN_WOKSPACE string = "jinyaoMa"
 )
 
 var (

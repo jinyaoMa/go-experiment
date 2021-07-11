@@ -1,5 +1,6 @@
 export default {
   common: {
+    LANG: "zh-cn",
     langTag: "中",
     btnLangTips: "Click to use English (currently in Chinese)",
     btnSettingsTips: "设置",

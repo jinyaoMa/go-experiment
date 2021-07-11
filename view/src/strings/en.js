@@ -1,5 +1,6 @@
 export default {
   common: {
+    LANG: "en-us",
     langTag: "Aa",
     btnLangTips: "当前语言为英语，点击使用简体中文",
     btnSettingsTips: "Settings",

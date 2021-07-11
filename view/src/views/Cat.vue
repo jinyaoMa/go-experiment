@@ -445,9 +445,10 @@ export default {
       let isPicture = /^\.(jpg|jpeg|git|png|bmp|webp|tif|svg)$/.test(
         file.Extension
       );
-      let isVideo = /^\.(wmv|rm|rmvb|mp4|3gp|mov|m4v|avi|mkv|flv|dat)$/.test(
-        file.Extension
-      );
+      let isVideo =
+        /^\.(wmv|rm|rmvb|mp4|3gp|mov|m4v|avi|mkv|flv|dat|webm|swf)$/.test(
+          file.Extension
+        );
       let isMusic = /^\.(cda|wav|mp3|wma|ra|midi|aif|aiff|vqf|ape|flac)$/.test(
         file.Extension
       );

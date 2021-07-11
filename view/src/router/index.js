@@ -61,6 +61,28 @@ const routes = [
     }
   },
   {
+    path: "/minip",
+    name: "Minip",
+    component() {
+      return import(/* webpackChunkName: "minip" */ "../views/Minip.vue");
+    },
+    meta: {
+      spinAtCorner: false,
+      requireAuth: false
+    }
+  },
+  {
+    path: "/miniv",
+    name: "Miniv",
+    component() {
+      return import(/* webpackChunkName: "miniv" */ "../views/Miniv.vue");
+    },
+    meta: {
+      spinAtCorner: false,
+      requireAuth: false
+    }
+  },
+  {
     path: "/:cat",
     name: "Cat",
     component() {
@@ -104,7 +126,18 @@ const isLogin = (o) => {
 };
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requireAuth)) {
+  if (
+    /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i.test(
+      window.navigator.userAgent
+    ) &&
+    to.path != "/minip" &&
+    to.path != "/miniv"
+  ) {
+    next({
+      path: "/minip",
+      query: { redirect: to.fullPath }
+    });
+  } else if (to.matched.some((record) => record.meta.requireAuth)) {
     if (!isLogin()) {
       next({
         path: "/login",

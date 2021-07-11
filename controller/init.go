@@ -7,6 +7,7 @@ import (
 	"jinyaoma/go-experiment/model"
 	"net/http"
 	"time"
+	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -97,6 +98,9 @@ func RunRouter() {
 		InitFiles(api)
 		InitAdmin(api)
 		InitService(api)
+		if utf8.RuneCountInString(config.PASSWORD_DERECT_ACCESS_TO_ADMIN_WOKSPACE) > 0 {
+			InitSecret(api)
+		}
 	}
 
 	router.Run(config.SERVER_PORT)
