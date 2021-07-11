@@ -36,6 +36,16 @@ func initUserAdmin(db *gorm.DB) User {
 	if errors.Is(resultAdmin.Error, gorm.ErrRecordNotFound) {
 		resultRole := db.First(&role, "name = ?", ROLE_ADMIN)
 		if resultRole.RowsAffected == 1 {
+			user := User{
+				Name:     "Admin",
+				Account:  "admin",
+				Password: "admin",
+				RoleID:   role.ID,
+			}
+			resultUser := db.Create(&user)
+			if resultUser.Error == nil {
+				log.Println("User admin initialized")
+			}
 			var userFiles []File
 			err := workspace.InitUserWorkspace("admin", func(path string, fileInfo os.FileInfo) {
 				var typ string
@@ -52,20 +62,15 @@ func initUserAdmin(db *gorm.DB) User {
 					Extension: filepath.Ext(path),
 					Size:      uint64(fileInfo.Size()),
 					ShareCode: shareCode,
+					UserID:    user.ID,
 				})
 			})
 			if err != nil {
 				log.Println("User admin workspace error")
-			} else {
-				if db.Create(&User{
-					Name:     "Admin",
-					Account:  "admin",
-					Password: "admin",
-					RoleID:   role.ID,
-					Files:    userFiles,
-				}).Error == nil {
-					log.Println("User admin initialized")
-				}
+			}
+			resultUserFiles := db.CreateInBatches(userFiles, 1000)
+			if resultUserFiles.Error != nil {
+				log.Println("User files init batches error")
 			}
 		}
 	}
