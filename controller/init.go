@@ -87,11 +87,6 @@ func RunRouter() {
 
 	api := router.Group("/api")
 	{
-		api.GET("/ping", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"message": "pong",
-			})
-		})
 		InitLogin(api)
 		InitLogout(api)
 		InitSignup(api)
