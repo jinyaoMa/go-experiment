@@ -67,7 +67,7 @@ export default {
       return `${this.$http.defaults.baseURL}/api/secret/${file.Apath}?secret=${this.secret}`;
     },
     isImage(file) {
-      return /^\.(jpg|jpeg|git|png|bmp|webp|tif|svg)$/.test(file.Extension);
+      return /^\.(jpg|jpeg|git|png|bmp|webp|tif|svg)$/i.test(file.Extension);
     },
     handleLoad() {
       this.$startLoading();
@@ -125,7 +125,7 @@ export default {
             if (file.Type === "directory") {
               return true;
             }
-            return /^\.(jpg|jpeg|git|png|bmp|webp|tif|svg)$/.test(
+            return /^\.(jpg|jpeg|git|png|bmp|webp|tif|svg)$/i.test(
               file.Extension
             );
           }
@@ -141,7 +141,7 @@ export default {
         if (file.Type === "directory") {
           return true;
         }
-        return /^\.(jpg|jpeg|gif|png|bmp|webp|tif|svg)$/.test(file.Extension);
+        return /^\.(jpg|jpeg|gif|png|bmp|webp|tif|svg)$/i.test(file.Extension);
       });
     },
   },
