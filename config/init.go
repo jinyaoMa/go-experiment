@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	WORKSPACE                 string = "E:/"
+	WORKSPACE                 string = "D:/WORKSPACE"
 	WORKSPACE_AVAILABLE_SPACE uint64 = 280 * 1024 * 1024 * 1024 // 280 GB
 	WORKSPACE_CAN_INITIALIZE  bool   = true
 
