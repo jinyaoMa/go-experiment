@@ -22,7 +22,7 @@ Vue.use(VueVideoPlayer, {
   }
 });
 
-axios.defaults.baseURL = "http://192.168.1.29:55699";
+axios.defaults.baseURL = "http://192.168.1.5:55699";
 axios.defaults.transformRequest = [
   function(data) {
     return qs.stringify(data);
