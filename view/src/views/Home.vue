@@ -644,7 +644,7 @@ table {
     }
   }
   .col-select {
-    width: 1em;
+    width: 1rem;
   }
   .col-filename {
     display: flex;
